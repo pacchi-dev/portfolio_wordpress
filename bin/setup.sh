@@ -79,6 +79,19 @@ else
     --skip-email
 fi
 
+# ---------------------------------------------------------------------------
+# wp-config.php の定数
+#   WORDPRESS_CONFIG_EXTRA 環境変数はこのイメージでは反映されなかったため、
+#   WP-CLI の `wp config set` で直接書き込む。
+#   --raw は値を PHP リテラルとして扱う指定（true が文字列 "true" にならない）。
+# ---------------------------------------------------------------------------
+echo "==> wp-config.php の定数を設定します"
+wp config set WP_DEBUG true --raw --type=constant >/dev/null
+wp config set WP_DEBUG_LOG true --raw --type=constant >/dev/null
+wp config set WP_DEBUG_DISPLAY false --raw --type=constant >/dev/null
+wp config set DISALLOW_FILE_EDIT true --raw --type=constant >/dev/null
+wp config set WP_ENVIRONMENT_TYPE local --type=constant >/dev/null
+
 echo "==> 基本設定を適用します"
 
 # パーマリンク構造。

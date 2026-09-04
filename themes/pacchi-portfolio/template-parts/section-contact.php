@@ -73,5 +73,79 @@ mp_section_open(
 	<p class="contact-empty"><?php esc_html_e( '連絡先は準備中です。', 'pacchi-portfolio' ); ?></p>
 <?php endif; ?>
 
+<h3 class="contact-form__heading"><?php esc_html_e( 'メッセージを送る', 'pacchi-portfolio' ); ?></h3>
+
+<?php
+/*
+ * 送信結果の表示。
+ * $_GET の値は必ずサニタイズしてから使う。
+ * nonce 検証は不要（読み取り専用で副作用が無いため）だが、
+ * 未検証の入力をそのまま出力しないことは必須。
+ */
+$mp_status = isset( $_GET['contact'] ) ? sanitize_key( wp_unslash( (string) $_GET['contact'] ) ) : '';
+$mp_notice = ( '' !== $mp_status && function_exists( 'pc_contact_message' ) )
+	? pc_contact_message( $mp_status )
+	: null;
+
+if ( $mp_notice ) :
+	?>
+	<p class="form-notice form-notice--<?php echo esc_attr( $mp_notice['type'] ); ?>" role="status">
+		<?php echo esc_html( $mp_notice['message'] ); ?>
+	</p>
+	<?php
+endif;
+?>
+
+<form class="contact-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+	<?php
+	/*
+	 * admin-post.php はこの action の値でハンドラを振り分ける。
+	 * 値が無いと 400 になる。
+	 */
+	?>
+	<input type="hidden" name="action" value="<?php echo esc_attr( PC_CONTACT_ACTION ); ?>">
+
+	<?php
+	/*
+	 * nonce の隠しフィールドを出力する。
+	 * 第 3 引数 false は referer フィールドを出さない指定。
+	 */
+	wp_nonce_field( PC_CONTACT_NONCE_ACTION, 'pc_contact_nonce', true, true );
+	?>
+
+	<?php /* ハニーポット。人間には見えず、bot だけが入力する。 */ ?>
+	<div class="contact-form__honeypot" aria-hidden="true">
+		<label for="pc_website"><?php esc_html_e( 'この項目は入力しないでください', 'pacchi-portfolio' ); ?></label>
+		<input type="text" id="pc_website" name="pc_website" tabindex="-1" autocomplete="off">
+	</div>
+
+	<div class="contact-form__row">
+		<p class="field">
+			<label for="pc_name"><?php esc_html_e( 'お名前', 'pacchi-portfolio' ); ?> <span class="field__required">*</span></label>
+			<input type="text" id="pc_name" name="pc_name" required maxlength="100" autocomplete="name">
+		</p>
+		<p class="field">
+			<label for="pc_email"><?php esc_html_e( 'メールアドレス', 'pacchi-portfolio' ); ?> <span class="field__required">*</span></label>
+			<input type="email" id="pc_email" name="pc_email" required maxlength="200" autocomplete="email">
+		</p>
+	</div>
+
+	<p class="field">
+		<label for="pc_subject"><?php esc_html_e( '件名', 'pacchi-portfolio' ); ?></label>
+		<input type="text" id="pc_subject" name="pc_subject" maxlength="200">
+	</p>
+
+	<p class="field">
+		<label for="pc_message"><?php esc_html_e( 'お問い合わせ内容', 'pacchi-portfolio' ); ?> <span class="field__required">*</span></label>
+		<textarea id="pc_message" name="pc_message" rows="7" required maxlength="5000"></textarea>
+	</p>
+
+	<p class="contact-form__submit">
+		<button type="submit" class="button button--primary">
+			<?php esc_html_e( '送信する', 'pacchi-portfolio' ); ?>
+		</button>
+	</p>
+</form>
+
 <?php
 mp_section_close();

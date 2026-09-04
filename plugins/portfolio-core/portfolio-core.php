@@ -37,6 +37,7 @@ require_once PC_PLUGIN_DIR . 'inc/fields.php';
 require_once PC_PLUGIN_DIR . 'inc/fields-front-page.php';
 require_once PC_PLUGIN_DIR . 'inc/github-client.php';
 require_once PC_PLUGIN_DIR . 'inc/rest.php';
+require_once PC_PLUGIN_DIR . 'inc/contact-form.php';
 
 /**
  * 有効化時の処理。

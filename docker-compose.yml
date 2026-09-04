@@ -48,18 +48,15 @@ services:
       # GitHub API 連携用。getenv() で参照する。
       GITHUB_USERNAME: ${GITHUB_USERNAME:-}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
-      WORDPRESS_CONFIG_EXTRA: |
-        define( 'WP_DEBUG_LOG', true );
-        define( 'WP_DEBUG_DISPLAY', false );
-        @ini_set( 'display_errors', 0 );
-        /* 管理画面からのテーマ・プラグイン編集を禁止（実案件でも推奨される設定） */
-        define( 'DISALLOW_FILE_EDIT', true );
-        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+      # 注意: WORDPRESS_CONFIG_EXTRA はこのイメージでは wp-config.php へ
+      #       反映されなかったため使用しない。定数は bin/setup.sh の
+      #       `wp config set` で確実に書き込む。
     volumes:
       - wp_core:/var/www/html
       - ./themes/pacchi-portfolio:/var/www/html/wp-content/themes/pacchi-portfolio
       - ./plugins/portfolio-core:/var/www/html/wp-content/plugins/portfolio-core
       - ./uploads:/var/www/html/wp-content/uploads
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
     restart: unless-stopped
 
   wpcli:
@@ -82,6 +79,7 @@ services:
       - ./themes/pacchi-portfolio:/var/www/html/wp-content/themes/pacchi-portfolio
       - ./plugins/portfolio-core:/var/www/html/wp-content/plugins/portfolio-core
       - ./uploads:/var/www/html/wp-content/uploads
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins
       - ./bin:/scripts
     # コマンド実行のたびに起動すると遅いため常駐させ、exec で使う
     entrypoint: ["tail", "-f", "/dev/null"]
