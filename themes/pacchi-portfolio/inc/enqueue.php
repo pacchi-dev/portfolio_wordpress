@@ -43,18 +43,18 @@ add_action( 'wp_enqueue_scripts', 'mp_enqueue_assets' );
 function mp_enqueue_assets(): void {
 
 	/*
-	 * Web フォント。
-	 * 第 4 引数のバージョンに null を渡すと ?ver= が付かない。
-	 * 外部 CDN の URL にクエリを足すとキャッシュ効率が落ちるため。
+	 * Web フォント（セルフホスト）。
 	 *
-	 * TODO(Phase 8): パフォーマンス改善としてセルフホストへ切り替える。
-	 *                外部リクエストを 0 にでき、プライバシー面でも望ましい。
+	 * Google Fonts の CDN から読み込んでいたが、外部ドメインへの接続と
+	 * CSS 取得が描画を 816ms ブロックしていた（Lighthouse 実測）。
+	 * woff2 を同一オリジンに置くことで外部リクエストを 0 にしている。
+	 * 個人情報を外部へ送らずに済むため、プライバシー面でも望ましい。
 	 */
 	wp_enqueue_style(
 		'mp-fonts',
-		'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
+		MP_THEME_URI . '/assets/css/fonts.css',
 		array(),
-		null
+		mp_asset_version( '/assets/css/fonts.css' )
 	);
 
 	// メインスタイル。フォントに依存させ、必ず後に読み込ませる。
@@ -67,37 +67,53 @@ function mp_enqueue_assets(): void {
 
 	/*
 	 * ナビゲーション用の JS。
-	 * 第 5 引数 true で </body> 直前に出力し、描画をブロックしない。
+	 *
+	 * 第 5 引数に配列を渡せるのは WordPress 6.3 以降。
+	 * in_footer だけでは Lighthouse に描画ブロックと判定されるため
+	 * strategy => 'defer' を指定して HTML の解析を止めないようにする。
+	 * boolean を渡す旧来の書き方でも動くが、defer は指定できない。
 	 */
 	wp_enqueue_script(
 		'mp-nav',
 		MP_THEME_URI . '/assets/js/nav.js',
 		array(),
 		mp_asset_version( '/assets/js/nav.js' ),
-		true
+		array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		)
 	);
 }
 
 /**
- * 外部フォントへの接続を先行させる（filter hook の例）。
+ * フォントファイル自体を preload する。
  *
- * wp_resource_hints は WordPress が <head> に出力する
- * dns-prefetch / preconnect のリストをフィルタするための hook。
- * add_filter の第 3 引数は優先度、第 4 引数は受け取る引数の数。
- * 引数が 2 つ以上ある filter では第 4 引数の指定を忘れやすい。
+ * CSS の解析を待たずにダウンロードを開始でき、
+ * テキストの再描画（FOUT）が起きる時間を短くできる。
  *
- * @param string[] $urls          リソースヒントの URL 配列。
- * @param string   $relation_type 関係の種類。
- * @return string[]
+ * 登録はファイルのトップレベルで行う。wp_enqueue_scripts の
+ * コールバック内から wp_head の優先度 1 に登録しても、
+ * その時点では既に通過済みで実行されない。
  */
-add_filter( 'wp_resource_hints', 'mp_resource_hints', 10, 2 );
-function mp_resource_hints( array $urls, string $relation_type ): array {
-	if ( 'preconnect' === $relation_type ) {
-		$urls[] = array(
-			'href' => 'https://fonts.gstatic.com',
-			'crossorigin',
+add_action( 'wp_head', 'mp_preload_fonts', 1 );
+
+/**
+ * フォントファイルを preload する。
+ *
+ * crossorigin の指定は必須。フォントは CORS モードで取得されるため、
+ * 指定が無いと preload したものが再利用されず二重にダウンロードされる。
+ * 実装ミスとして非常に多い箇所。
+ */
+function mp_preload_fonts(): void {
+	$fonts = array(
+		'/assets/fonts/inter-latin-var.woff2',
+		'/assets/fonts/jetbrains-mono-latin-var.woff2',
+	);
+
+	foreach ( $fonts as $font ) {
+		printf(
+			'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+			esc_url( MP_THEME_URI . $font )
 		);
 	}
-
-	return $urls;
 }

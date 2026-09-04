@@ -186,4 +186,45 @@ update_field( 'contact_lead', 'お仕事のご相談・ご質問は以下から�
 update_field( 'contact_email', 'contact@pacchi.net', $page_id );
 update_field( 'contact_github', 'https://github.com/pacchi-dev', $page_id );
 
+// ---------------------------------------------------------------------------
+// 8. サイトアイコン（favicon）
+// ---------------------------------------------------------------------------
+WP_CLI::log( '==> サイトアイコンを設定します' );
+
+if ( (int) get_option( 'site_icon' ) > 0 ) {
+	WP_CLI::log( '    設定済みです（スキップ）' );
+} else {
+	$icon_source = '/var/www/html/wp-content/themes/pacchi-portfolio/assets/img/site-icon.png';
+
+	if ( ! file_exists( $icon_source ) || 0 === (int) filesize( $icon_source ) ) {
+		WP_CLI::warning( 'サイトアイコンの元画像が見つかりません: ' . $icon_source );
+	} else {
+		// media_handle_sideload に必要な WordPress 側のヘルパを読み込む。
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+
+		// 元ファイルを移動されないよう、一時ファイルへコピーしてから渡す。
+		$tmp = wp_tempnam( 'site-icon.png' );
+		copy( $icon_source, $tmp );
+
+		$attachment_id = media_handle_sideload(
+			array(
+				'name'     => 'site-icon.png',
+				'tmp_name' => $tmp,
+			),
+			0,
+			'Site Icon'
+		);
+
+		if ( is_wp_error( $attachment_id ) ) {
+			WP_CLI::warning( 'サイトアイコンの登録に失敗: ' . $attachment_id->get_error_message() );
+			@unlink( $tmp );
+		} else {
+			update_option( 'site_icon', (int) $attachment_id );
+			WP_CLI::log( "    登録しました (attachment ID: {$attachment_id})" );
+		}
+	}
+}
+
 WP_CLI::success( "トップページの内容を投入しました (page_on_front = {$page_id})" );

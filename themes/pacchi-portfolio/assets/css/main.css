@@ -1551,3 +1551,241 @@ svg {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* --------------------------------------------------------------------------
+   21. ページ見出し（アーカイブ・詳細）
+   -------------------------------------------------------------------------- */
+.page-head {
+  border-bottom: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+  padding-block: 3.5rem;
+}
+
+.page-head__title {
+  margin-top: 0.75rem;
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+.page-head__lead {
+  max-width: 42rem;
+  margin-top: 1rem;
+  color: var(--color-muted);
+  line-height: 1.8;
+}
+
+.page-head .section__eyebrow a:hover { color: var(--color-accent-hover); }
+
+@media (min-width: 768px) {
+  .page-head { padding-block: 5rem; }
+  .page-head__title { font-size: 2.5rem; }
+}
+
+/* --------------------------------------------------------------------------
+   22. 制作実績
+   -------------------------------------------------------------------------- */
+.work-grid { display: grid; gap: 1.5rem; }
+
+.work-card__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-card);
+}
+
+.work-card__link:hover { border-color: var(--color-accent); }
+
+.work-card__thumb {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.work-card__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+.work-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.25rem;
+}
+
+.work-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.work-card__period {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.work-card__title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+
+.work-card__link:hover .work-card__title { color: var(--color-accent); }
+
+.work-card__summary {
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--color-muted);
+}
+
+.badge--released {
+  border-color: rgb(63 221 149 / 0.3);
+  background-color: var(--color-positive-soft);
+  color: var(--color-positive);
+}
+
+.badge--development {
+  border-color: rgb(56 205 228 / 0.3);
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.badge--archived {
+  border-color: var(--color-line-strong);
+  background-color: var(--color-surface-strong);
+  color: var(--color-subtle);
+}
+
+.work-single__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.875rem;
+}
+
+.work-single__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.work-single__thumb {
+  margin: 0 0 2.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.work-single__block { margin-bottom: 2.5rem; }
+
+.work-single__heading {
+  padding-bottom: 0.625rem;
+  margin-bottom: 1.125rem;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.arch-diagram {
+  margin: 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+.work-single__nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-line);
+  font-size: 0.875rem;
+}
+
+.work-single__nav a { color: var(--color-muted); }
+.work-single__nav a:hover { color: var(--color-accent); }
+.work-single__next { margin-left: auto; text-align: right; }
+
+/* --------------------------------------------------------------------------
+   23. タクソノミー一覧
+   -------------------------------------------------------------------------- */
+.term-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.term-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background-color: var(--color-card);
+}
+
+.term-item:hover { border-color: var(--color-accent); }
+
+.term-item__type {
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-subtle);
+}
+
+.term-item__title { flex: 1; font-size: 0.9375rem; font-weight: 500; }
+.term-item:hover .term-item__title { color: var(--color-accent); }
+
+.term-item__period {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   24. ページネーション
+   -------------------------------------------------------------------------- */
+.pagination { margin-top: 3rem; }
+.nav-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding-inline: 0.625rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+.page-numbers:hover,
+.page-numbers.current {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+@media (min-width: 640px) {
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

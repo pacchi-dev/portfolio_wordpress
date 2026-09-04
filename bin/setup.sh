@@ -131,6 +131,19 @@ for slug in sample-page privacy-policy; do
   fi
 done
 
+# ---------------------------------------------------------------------------
+# 静的アセットのキャッシュ設定
+#   WordPress が管理する範囲の外側へ追記する。
+# ---------------------------------------------------------------------------
+echo "==> 静的アセットのキャッシュ設定を適用します"
+if ! docker exec "${WP_CONTAINER}" grep -q "mod_expires" /var/www/html/.htaccess 2>/dev/null; then
+  docker exec -i "${WP_CONTAINER}" sh -c 'cat >> /var/www/html/.htaccess' < config/htaccess-cache.conf
+  docker exec "${WP_CONTAINER}" sh -c 'a2enmod expires headers >/dev/null 2>&1 && apache2ctl graceful >/dev/null 2>&1' || true
+  echo "    適用しました"
+else
+  echo "    適用済みです（スキップ）"
+fi
+
 echo "==> 不要な同梱プラグインを削除します"
 # WordPress に同梱される Akismet / Hello Dolly は使わないため削除する。
 # 「不要なプラグイン依存を避ける」という本プロジェクトの方針に沿う。
