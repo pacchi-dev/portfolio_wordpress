@@ -32,7 +32,14 @@ function mp_lines_to_array( ?string $text ): array {
 		return array();
 	}
 
-	$lines = preg_split( '/\R/', $text );
+	/*
+	 * /u（UTF-8 モード）は必須。
+	 * \R は改行のほかに \x85（NEL）にもマッチするが、/u が無いと PCRE は
+	 * バイト単位で動作するため、日本語の UTF-8 継続バイト 0x85 を改行と誤認し、
+	 * マルチバイト文字の途中で分割してしまう。
+	 * PHP で日本語を正規表現処理する際の典型的な不具合。
+	 */
+	$lines = preg_split( '/\R/u', $text );
 
 	if ( false === $lines ) {
 		return array();

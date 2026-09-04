@@ -1,0 +1,211 @@
+[
+  {
+    "id": "backend",
+    "title": "Backend",
+    "skills": [
+      {
+        "name": "Go",
+        "level": "main"
+      },
+      {
+        "name": "Echo",
+        "level": "main"
+      },
+      {
+        "name": "PHP",
+        "level": "main"
+      },
+      {
+        "name": "Laravel",
+        "level": "main"
+      },
+      {
+        "name": "REST API",
+        "level": "main"
+      },
+      {
+        "name": "OpenAPI",
+        "level": "main"
+      },
+      {
+        "name": "DDD / オニオンアーキテクチャ",
+        "level": "main"
+      },
+      {
+        "name": "gRPC",
+        "level": "experienced"
+      },
+      {
+        "name": "Python / FastAPI",
+        "level": "experienced"
+      }
+    ]
+  },
+  {
+    "id": "database",
+    "title": "Database / Cache",
+    "skills": [
+      {
+        "name": "MySQL",
+        "level": "main"
+      },
+      {
+        "name": "PostgreSQL",
+        "level": "main"
+      },
+      {
+        "name": "Aurora",
+        "level": "main"
+      },
+      {
+        "name": "Redis / ElastiCache",
+        "level": "main"
+      },
+      {
+        "name": "Aerospike",
+        "level": "experienced"
+      }
+    ]
+  },
+  {
+    "id": "cloud",
+    "title": "Cloud / Infrastructure",
+    "skills": [
+      {
+        "name": "AWS",
+        "level": "main"
+      },
+      {
+        "name": "ECS",
+        "level": "main"
+      },
+      {
+        "name": "RDS / Aurora",
+        "level": "main"
+      },
+      {
+        "name": "S3",
+        "level": "main"
+      },
+      {
+        "name": "VPC",
+        "level": "experienced"
+      },
+      {
+        "name": "ALB",
+        "level": "experienced"
+      },
+      {
+        "name": "Route53",
+        "level": "experienced"
+      },
+      {
+        "name": "Lambda",
+        "level": "experienced"
+      },
+      {
+        "name": "Athena",
+        "level": "experienced"
+      },
+      {
+        "name": "Glue",
+        "level": "experienced"
+      },
+      {
+        "name": "Redshift",
+        "level": "experienced"
+      },
+      {
+        "name": "OCI",
+        "level": "experienced"
+      },
+      {
+        "name": "Cognito",
+        "level": "familiar"
+      }
+    ]
+  },
+  {
+    "id": "devops",
+    "title": "Development / Operation",
+    "skills": [
+      {
+        "name": "Docker",
+        "level": "main"
+      },
+      {
+        "name": "Git / GitHub",
+        "level": "main"
+      },
+      {
+        "name": "GitHub Actions",
+        "level": "experienced"
+      },
+      {
+        "name": "CI/CD",
+        "level": "experienced"
+      },
+      {
+        "name": "Datadog",
+        "level": "experienced"
+      },
+      {
+        "name": "Vitest",
+        "level": "experienced"
+      },
+      {
+        "name": "Jenkins",
+        "level": "familiar"
+      },
+      {
+        "name": "Playwright",
+        "level": "familiar"
+      }
+    ]
+  },
+  {
+    "id": "frontend",
+    "title": "Frontend",
+    "note": "バックエンドが主軸ですが、必要に応じて画面側まで対応できます。",
+    "skills": [
+      {
+        "name": "TypeScript",
+        "level": "main"
+      },
+      {
+        "name": "React",
+        "level": "experienced"
+      },
+      {
+        "name": "Next.js",
+        "level": "experienced"
+      },
+      {
+        "name": "Vue.js",
+        "level": "experienced"
+      },
+      {
+        "name": "Angular",
+        "level": "familiar"
+      }
+    ]
+  },
+  {
+    "id": "ai",
+    "title": "AI",
+    "skills": [
+      {
+        "name": "Claude Code",
+        "level": "main"
+      },
+      {
+        "name": "GitHub Copilot",
+        "level": "experienced"
+      },
+      {
+        "name": "Cursor",
+        "level": "experienced"
+      }
+    ]
+  }
+]

@@ -33,6 +33,7 @@ define( 'PC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once PC_PLUGIN_DIR . 'inc/post-types.php';
+require_once PC_PLUGIN_DIR . 'inc/fields.php';
 
 /**
  * 有効化時の処理。
