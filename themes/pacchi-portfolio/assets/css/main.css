@@ -1,0 +1,565 @@
+@charset "UTF-8";
+
+/* ==========================================================================
+   Pacchi Portfolio — メインスタイル
+
+   Next.js 版（Tailwind CSS v4）からの移植。
+   デザイントークンは Tailwind の @theme が CSS カスタムプロパティを
+   出力する仕組みだったため、:root へそのまま持ち込めている。
+   変更したのはユーティリティクラスの部分のみ。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. デザイントークン
+   -------------------------------------------------------------------------- */
+:root {
+  --color-bg: #060a10;
+  --color-surface: #0a0f16;
+  --color-surface-strong: #101722;
+  --color-card: #0c121b;
+  --color-line: #1a2432;
+  --color-line-strong: #2c3a4d;
+
+  --color-fg: #e8eef5;
+  --color-muted: #a3b3c4;
+  /* 4.5:1 を全背景トークン上で満たす明度（WCAG AA） */
+  --color-subtle: #7c8ea3;
+
+  --color-accent: #38cde4;
+  --color-accent-hover: #7ee2f2;
+  --color-accent-soft: #0b2531;
+  --color-on-accent: #04141a;
+
+  --color-positive: #3fdd95;
+  --color-positive-soft: #0a2519;
+
+  --font-sans: "Inter", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+    "BIZ UDPGothic", Meiryo, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas,
+    "Liberation Mono", monospace;
+
+  --container: 64rem;
+  --header-height: 4rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-full: 9999px;
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   2. ベース
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+svg {
+  display: block;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* sticky header の高さぶんアンカー位置をずらす */
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 日本語の折り返しを自然にする */
+.text-balance-ja {
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+}
+
+/* WordPress 標準のスクリーンリーダー用クラス */
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. レイアウト
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.container--narrow {
+  max-width: 48rem;
+}
+
+.site-main {
+  min-height: 60vh;
+}
+
+/* --------------------------------------------------------------------------
+   4. ヘッダー
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid var(--color-line);
+  background-color: rgb(6 10 16 / 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.site-logo {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.site-logo__name {
+  color: var(--color-fg);
+}
+
+.site-logo__slash {
+  color: var(--color-accent);
+}
+
+.site-nav {
+  display: none;
+}
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.site-nav__list a {
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.site-nav__list a:hover {
+  color: var(--color-accent);
+}
+
+/* モバイルメニュー。details/summary で JS なしに開閉する。 */
+.mobile-nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-fg);
+  cursor: pointer;
+  list-style: none;
+}
+
+.mobile-nav__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-nav__toggle:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.mobile-nav__icon--close,
+.mobile-nav[open] .mobile-nav__icon--open {
+  display: none;
+}
+
+.mobile-nav[open] .mobile-nav__icon--close {
+  display: block;
+}
+
+.mobile-nav__panel {
+  position: absolute;
+  inset-inline: 0;
+  top: var(--header-height);
+  border-block: 1px solid var(--color-line);
+  background-color: var(--color-bg);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+}
+
+.mobile-nav__list {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 0.5rem 1.5rem;
+}
+
+.mobile-nav__list li {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.mobile-nav__list li:last-child {
+  border-bottom: 0;
+}
+
+.mobile-nav__list a {
+  display: block;
+  padding-block: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+@media (min-width: 768px) {
+  .site-nav {
+    display: block;
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. セクション（開閉式）
+   -------------------------------------------------------------------------- */
+.section--surface {
+  border-block: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+}
+
+.section__details {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 2.25rem 1.5rem;
+}
+
+.section__details[open] {
+  padding-block: 3.5rem;
+}
+
+.section__summary {
+  margin-inline: -0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 0.15s ease;
+}
+
+.section__summary::-webkit-details-marker {
+  display: none;
+}
+
+.section__summary:hover {
+  background-color: rgb(16 23 34 / 0.4);
+}
+
+.section__summary-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section__eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  color: var(--color-accent);
+}
+
+.section__title {
+  margin-top: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.section__chevron {
+  flex-shrink: 0;
+  color: var(--color-subtle);
+  transition: transform 0.2s ease, color 0.15s ease;
+}
+
+.section__details[open] .section__chevron {
+  transform: rotate(180deg);
+}
+
+.section__summary:hover .section__chevron {
+  color: var(--color-accent);
+}
+
+.section__body {
+  margin-top: 1.75rem;
+}
+
+.section__lead {
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+  color: var(--color-muted);
+  line-height: 1.8;
+}
+
+@media (min-width: 768px) {
+  .section__details[open] {
+    padding-block: 5rem;
+  }
+
+  .section__title {
+    font-size: 1.875rem;
+  }
+
+  .section__body {
+    margin-top: 2.25rem;
+  }
+
+  .section__lead {
+    margin-bottom: 3rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. パーツ: タグ / ボタン
+   -------------------------------------------------------------------------- */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
+.tag--default {
+  border-color: var(--color-line-strong);
+  background-color: var(--color-card);
+  color: var(--color-fg);
+}
+
+.tag--accent {
+  border-color: rgb(56 205 228 / 0.25);
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.tag--muted {
+  border-color: var(--color-line);
+  background-color: var(--color-card);
+  color: var(--color-subtle);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.button--primary {
+  border-color: var(--color-accent);
+  background-color: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+.button--primary:hover {
+  border-color: var(--color-accent-hover);
+  background-color: var(--color-accent-hover);
+}
+
+.button--secondary {
+  border-color: var(--color-line-strong);
+  background-color: transparent;
+  color: var(--color-fg);
+}
+
+.button--secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* --------------------------------------------------------------------------
+   7. フッター
+   -------------------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--color-line);
+  background-color: var(--color-surface);
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding: 2.5rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--color-subtle);
+}
+
+.site-footer__name {
+  color: var(--color-muted);
+}
+
+.site-footer__slash {
+  color: var(--color-accent);
+}
+
+@media (min-width: 768px) {
+  .site-footer__inner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. 汎用エントリ（index.php / 404.php）
+   -------------------------------------------------------------------------- */
+.entry__title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.entry__content {
+  margin-top: 1.5rem;
+  color: var(--color-muted);
+}
+
+.entry__content a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.error-404 {
+  padding-block: 5rem;
+}
+
+.error-404 .button {
+  margin-top: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. アニメーションの抑制
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,24 @@
+/*
+Theme Name:  Pacchi Portfolio
+Theme URI:   https://github.com/pacchi-dev/portfolio_wordpress
+Author:      pacchi
+Author URI:  https://github.com/pacchi-dev
+Description: バックエンドエンジニアのポートフォリオ用オリジナルテーマ。既製テーマやページビルダーに依存せず、テンプレート階層・The Loop・hooks を用いてフルスクラッチで実装している。
+Version:     1.0.0
+Requires at least: 6.0
+Requires PHP: 8.1
+License:     GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: pacchi-portfolio
+Tags:        portfolio, custom-theme, dark, one-page
+*/
+
+/*
+ * WordPress はディレクトリ内に「上記のコメントヘッダを持つ style.css」が
+ * あるかどうかでテーマとして認識する。この宣言自体が必須のため、
+ * 実際のスタイルを別ファイルに置く場合でもこのファイルは削除できない。
+ *
+ * 実スタイルは assets/css/main.css にあり、inc/enqueue.php から読み込む。
+ * style.css に直接書かないのは、バージョン付きでキャッシュ制御したいことと、
+ * 役割ごとにファイルを分けて見通しを保つため。
+ */
