@@ -1,0 +1,154 @@
+{
+  "profile": {
+    "name": "pacchi",
+    "role": "Backend Engineer",
+    "stack": [
+      "Go",
+      "PHP / Laravel",
+      "AWS"
+    ],
+    "heroLead": "Webサービスのバックエンドを中心に、要件整理・API/DB設計から実装・AWS環境での運用まで一貫して対応します。",
+    "availabilityLabel": "副業・業務委託のご相談を受付中",
+    "highlights": [
+      {
+        "label": "実務経験",
+        "value": "5年以上"
+      },
+      {
+        "label": "高トラフィック環境",
+        "value": "最大 600 TPS の広告配信基盤"
+      },
+      {
+        "label": "認定資格",
+        "value": "AWS SAA"
+      }
+    ],
+    "about": [
+      "Webバックエンドを中心に、設計・開発・運用まで一貫して携わっています。",
+      "Goを用いた大規模広告配信システムのバックエンド開発、PHP/Laravelを用いたWebシステム・データ基盤の開発、AWS環境の設計・構築・運用などを経験してきました。DDD・オニオン（クリーン）アーキテクチャを採用した現場で、詳細設計から実装、テスト、監視・障害対応、コードレビューまで担当しています。",
+      "直近では自社SaaSの立ち上げにテックリードとして参画し、要件整理・DB設計・API設計といった上流工程から実装までを担当しました。ドメインモデルを意識した設計と型安全なAPI開発により、変更に強く保守しやすいシステムを構築することを重視しています。",
+      "また、Claude CodeやGitHub Copilotなどの生成AIを、コード生成だけでなく開発ルールやレビュー基盤の整備といったチーム開発プロセスへ組み込む取り組みも行っています。"
+    ]
+  },
+  "services": [
+    {
+      "id": "backend",
+      "title": "Backend Development",
+      "description": "Web APIの設計・実装から既存システムの機能追加、DB設計、キャッシュ戦略、テスト、保守運用まで対応します。DDD・オニオンアーキテクチャに基づく、変更に強い実装を得意としています。",
+      "tags": [
+        "Go",
+        "PHP / Laravel",
+        "REST API",
+        "OpenAPI",
+        "Database Design",
+        "SQL",
+        "Redis / Cache",
+        "Testing",
+        "Code Review"
+      ]
+    },
+    {
+      "id": "cloud",
+      "title": "AWS / Infrastructure",
+      "description": "AWSを利用したWebサービスのインフラ設計・構築、クラウド環境でのアプリケーション開発・運用を経験しています。ネットワーク分離や冗長構成など、継続性を意識した構成を設計します。",
+      "tags": [
+        "VPC",
+        "ALB",
+        "ECS",
+        "RDS / Aurora",
+        "S3",
+        "EFS",
+        "Route53",
+        "Athena",
+        "Redshift",
+        "Datadog"
+      ]
+    },
+    {
+      "id": "design",
+      "title": "System Design / Operation",
+      "description": "実装だけではなく、要件整理、API・DB設計、監視、障害調査、性能改善、保守運用までシステム全体を意識して対応します。仕様が固まっていない段階からの整理も可能です。",
+      "tags": [
+        "Requirements",
+        "API Design",
+        "DB Design",
+        "Monitoring",
+        "Troubleshooting",
+        "Performance",
+        "Maintenance"
+      ]
+    },
+    {
+      "id": "ai",
+      "title": "AI-Assisted Development",
+      "description": "生成AIをコード生成だけでなく、開発ルール・レビュー・チーム開発プロセスへ組み込む取り組みを行っています。導入から運用ルールの整備までを支援できます。",
+      "tags": [
+        "Claude Code",
+        "GitHub Copilot",
+        "CLAUDE.md",
+        "Rules",
+        "Skills / Commands",
+        "GitHub Actions",
+        "AI Code Review"
+      ]
+    }
+  ],
+  "ai": {
+    "lead": "生成AIを「コードを書かせる道具」ではなく、チーム開発プロセスへ組み込む対象として扱っています。",
+    "body": [
+      "Claude Code や GitHub Copilot を日常的な開発に活用しています。",
+      "直近では Claude Code をチーム開発へ導入するため、プロジェクトコンテキストや開発ルールの整備、Skills / Commands の活用、GitHub Actions を利用した AI コードレビュー環境の構築などに取り組みました。"
+    ],
+    "points": [
+      "CLAUDE.md / AGENTS.md によるプロジェクト共通指示の整備",
+      "パス単位で自動適用される開発ルールの設計",
+      "hooks による機械的な規約チェック（設計上の抜け漏れ検知）",
+      "Skills による自己レビュー手順の標準化",
+      "GitHub Actions を用いた AI コードレビューの導入"
+    ],
+    "flow": [
+      "Project",
+      "CLAUDE.md / Rules",
+      "Skills / Commands",
+      "Claude Code",
+      "Pull Request",
+      "GitHub Actions",
+      "AI Code Review"
+    ]
+  },
+  "work": {
+    "lead": "副業・業務委託として、以下の領域でお力になれます。",
+    "services": [
+      "Go によるバックエンド開発 / API 実装",
+      "PHP・Laravel での開発・機能追加",
+      "REST API の設計・実装（OpenAPI）",
+      "既存 Web システムの機能追加・改修",
+      "DB 設計・SQL パフォーマンス改善",
+      "バグ調査・障害調査・原因特定",
+      "AWS 環境での開発・運用",
+      "AWS インフラ設計・構築のサポート",
+      "Datadog 等を利用した監視・調査",
+      "コードレビュー / 設計レビュー",
+      "Claude Code 導入・開発プロセス改善"
+    ],
+    "conditions": [
+      {
+        "label": "Remote",
+        "value": "フルリモート"
+      },
+      {
+        "label": "Availability",
+        "value": "平日夜 / 土日"
+      },
+      {
+        "label": "Hours",
+        "value": "週 10〜15 時間程度"
+      },
+      {
+        "label": "Contract",
+        "value": "業務委託（準委任）"
+      }
+    ],
+    "note": "まずは小さめのタスクからでもご相談ください。稼働条件は案件に応じて調整可能です。"
+  }
+}

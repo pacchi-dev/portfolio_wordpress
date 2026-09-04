@@ -22,4 +22,5 @@ define( 'MP_THEME_URI', get_template_directory_uri() );
 require_once MP_THEME_DIR . '/inc/setup.php';
 require_once MP_THEME_DIR . '/inc/enqueue.php';
 require_once MP_THEME_DIR . '/inc/template-tags.php';
+require_once MP_THEME_DIR . '/inc/customizer.php';
 require_once MP_THEME_DIR . '/inc/security.php';

@@ -231,3 +231,35 @@ function mp_primary_menu( string $list_class ): void {
 
 	echo '</ul>';
 }
+
+/**
+ * What I Do カードのアイコンを出力する。
+ *
+ * 外部アイコンライブラリを読み込まず、インライン SVG で描画する。
+ * リクエスト数を増やさず、currentColor で配色にも追従できる。
+ *
+ * @param string $key アイコンの種類。
+ */
+function mp_service_icon( string $key ): void {
+	$paths = array(
+		'backend' => '<rect x="3" y="4" width="18" height="7" rx="1.5" /><rect x="3" y="13" width="18" height="7" rx="1.5" /><path d="M6.5 7.5h.01M6.5 16.5h.01M10 7.5h4M10 16.5h4" />',
+		'cloud'   => '<path d="M17.5 18.5h-11a4 4 0 0 1-.6-7.96 5.5 5.5 0 0 1 10.73-1.4A4.5 4.5 0 0 1 17.5 18.5Z" />',
+		'design'  => '<circle cx="12" cy="12" r="8.5" /><path d="m15.5 8.5-2 5-5 2 2-5 5-2Z" />',
+		'ai'      => '<path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.5l-1.8-5.9-5.7-1.8L10.2 9 12 3.5Z" /><path d="M18.5 15.5l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6Z" />',
+	);
+
+	$path = $paths[ $key ] ?? $paths['backend'];
+
+	printf(
+		'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>',
+		// SVG の path は固定文字列のため wp_kses でタグを許可して出力する。
+		wp_kses(
+			$path,
+			array(
+				'path'   => array( 'd' => array() ),
+				'rect'   => array( 'x' => array(), 'y' => array(), 'width' => array(), 'height' => array(), 'rx' => array() ),
+				'circle' => array( 'cx' => array(), 'cy' => array(), 'r' => array() ),
+			)
+		)
+	);
+}

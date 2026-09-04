@@ -34,6 +34,7 @@ define( 'PC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 require_once PC_PLUGIN_DIR . 'inc/post-types.php';
 require_once PC_PLUGIN_DIR . 'inc/fields.php';
+require_once PC_PLUGIN_DIR . 'inc/fields-front-page.php';
 
 /**
  * 有効化時の処理。
