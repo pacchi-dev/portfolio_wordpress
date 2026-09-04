@@ -18,6 +18,7 @@ get_template_part( 'template-parts/section-about' );
 get_template_part( 'template-parts/section-services' );
 get_template_part( 'template-parts/section-skills' );
 get_template_part( 'template-parts/section-experience' );
+get_template_part( 'template-parts/section-github' );
 get_template_part( 'template-parts/section-ai' );
 get_template_part( 'template-parts/section-work-with-me' );
 get_template_part( 'template-parts/section-contact' );

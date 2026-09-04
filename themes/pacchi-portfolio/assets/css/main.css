@@ -1321,3 +1321,122 @@ svg {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* --------------------------------------------------------------------------
+   19. GitHub Activity
+   -------------------------------------------------------------------------- */
+.gh-langs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.gh-langs__label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.gh-langs__count {
+  margin-left: 0.375rem;
+  color: var(--color-accent);
+}
+
+.gh-list {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.gh-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  padding: 1.125rem 1.25rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-card);
+}
+
+.gh-card:hover {
+  border-color: var(--color-accent);
+}
+
+.gh-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.gh-card__name {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-fg);
+}
+
+.gh-card:hover .gh-card__name {
+  color: var(--color-accent);
+}
+
+.gh-card__stars {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.gh-card__desc {
+  flex: 1;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+
+.gh-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+.gh-card__lang {
+  color: var(--color-accent);
+}
+
+.gh-more {
+  margin-top: 1.75rem;
+}
+
+.notice-inline {
+  padding: 0.875rem 1.125rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-strong);
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.notice-inline--debug {
+  margin-top: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-subtle);
+}
+
+@media (min-width: 640px) {
+  .gh-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .gh-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

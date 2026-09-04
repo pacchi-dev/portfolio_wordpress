@@ -214,6 +214,7 @@ function mp_primary_menu( string $list_class ): void {
 		'services'   => __( 'What I Do', 'pacchi-portfolio' ),
 		'skills'     => __( 'Skills', 'pacchi-portfolio' ),
 		'experience' => __( 'Experience', 'pacchi-portfolio' ),
+		'github'     => __( 'GitHub', 'pacchi-portfolio' ),
 		'ai'         => __( 'AI Development', 'pacchi-portfolio' ),
 		'work'       => __( 'Work With Me', 'pacchi-portfolio' ),
 		'contact'    => __( 'Contact', 'pacchi-portfolio' ),
