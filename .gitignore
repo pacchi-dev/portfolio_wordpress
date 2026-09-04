@@ -1,18 +1,26 @@
-# WordPress 本体（Docker イメージが持つ。Git 管理しない）
-wordpress/
-wp-content/uploads/
+# ------------------------------------------------------------------
+# WordPress 本体は Git 管理しない。
+# Docker の名前付きボリュームに置き、イメージから展開される。
+# 管理するのは自作テーマ・自作プラグイン・環境定義・ドキュメントのみ。
+# ------------------------------------------------------------------
 
-# DB
-*.sql
-db-data/
+# アップロードされたメディア（サイズが大きく、DB と対で意味を持つため）
+uploads/*
+!uploads/.gitkeep
 
-# 環境変数
+# 環境変数（認証情報を含む）
 .env
-.env.local
 
-# 依存
-node_modules/
+# データベースダンプ
+*.sql
+*.sql.gz
+
+# 依存（将来 Composer / npm を使う場合に備える）
 vendor/
+node_modules/
+
+# WordPress のデバッグログ
+debug.log
 
 # OS / エディタ
 .DS_Store

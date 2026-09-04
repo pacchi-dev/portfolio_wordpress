@@ -1,0 +1,97 @@
+# WordPress ローカル開発環境
+#
+# 構成:
+#   db        MySQL 8.0
+#   wordpress WordPress + PHP 8.3 + Apache  → http://localhost:8080
+#   wpcli     WP-CLI（常駐させ docker compose exec で使う）
+#   mailpit   SMTP を受け止めてブラウザで確認 → http://localhost:8025
+#
+# WordPress 本体は名前付きボリューム wp_core に置き、
+# 自作テーマ・自作プラグインだけをバインドマウントする。
+# これにより「本体は更新で置換される / ユーザー領域は wp-content のみ」という
+# WordPress の構造をそのまま開発環境に反映している。
+
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: portfolio_wp_db
+    # WordPress は utf8mb4 を前提とするため明示する
+    command: >-
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: unless-stopped
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    container_name: portfolio_wp
+    depends_on:
+      - db
+    ports:
+      - "${WP_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      # WP_DEBUG を有効にし、エラーは画面に出さずログファイルへ出す。
+      # 画面表示のままだと HTML が壊れ、本番同様の見え方を確認できないため。
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_DEBUG_LOG', true );
+        define( 'WP_DEBUG_DISPLAY', false );
+        @ini_set( 'display_errors', 0 );
+        /* 管理画面からのテーマ・プラグイン編集を禁止（実案件でも推奨される設定） */
+        define( 'DISALLOW_FILE_EDIT', true );
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
+    volumes:
+      - wp_core:/var/www/html
+      - ./themes/pacchi-portfolio:/var/www/html/wp-content/themes/pacchi-portfolio
+      - ./plugins/portfolio-core:/var/www/html/wp-content/plugins/portfolio-core
+      - ./uploads:/var/www/html/wp-content/uploads
+    restart: unless-stopped
+
+  wpcli:
+    image: wordpress:cli
+    container_name: portfolio_wp_cli
+    depends_on:
+      - db
+      - wordpress
+    # WP-CLI は www-data(33) で動かす。root で実行するとファイル所有者がずれる。
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wp_core:/var/www/html
+      - ./themes/pacchi-portfolio:/var/www/html/wp-content/themes/pacchi-portfolio
+      - ./plugins/portfolio-core:/var/www/html/wp-content/plugins/portfolio-core
+      - ./uploads:/var/www/html/wp-content/uploads
+      - ./bin:/scripts
+    # コマンド実行のたびに起動すると遅いため常駐させ、exec で使う
+    entrypoint: ["tail", "-f", "/dev/null"]
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: portfolio_wp_mail
+    ports:
+      - "${MAILPIT_PORT:-8025}:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    restart: unless-stopped
+
+volumes:
+  wp_core:
+  db_data:
