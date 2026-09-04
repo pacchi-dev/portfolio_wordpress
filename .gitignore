@@ -1,0 +1,21 @@
+# WordPress 本体（Docker イメージが持つ。Git 管理しない）
+wordpress/
+wp-content/uploads/
+
+# DB
+*.sql
+db-data/
+
+# 環境変数
+.env
+.env.local
+
+# 依存
+node_modules/
+vendor/
+
+# OS / エディタ
+.DS_Store
+*.swp
+.idea/
+.vscode/
