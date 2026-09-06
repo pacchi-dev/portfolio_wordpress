@@ -155,7 +155,15 @@ cd portfolio_wordpress
 ```bash
 docker exec portfolio_wp_cli wp --path=/var/www/html eval-file /scripts/seed.php
 docker exec portfolio_wp_cli wp --path=/var/www/html eval-file /scripts/seed-front-page.php
+docker exec portfolio_wp_cli wp --path=/var/www/html eval-file /scripts/seed-works.php
 ```
+
+いずれのスクリプトも冪等です。何度実行しても投稿・画像は重複しません。
+
+`seed-works.php` は制作実績の投稿に加えて、`bin/seed/images/` の画像を
+メディアライブラリへ取り込みアイキャッチとして設定します。
+`uploads/` は Git 管理外のため、環境を作り直しても画像を再現できるよう
+元画像をリポジトリ側（`bin/seed/images/`）に置いています。
 
 ### Git 管理の方針
 

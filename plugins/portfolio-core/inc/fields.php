@@ -120,8 +120,14 @@ function pc_register_work_fields(): void {
 					'label'        => __( 'アーキテクチャ図', 'portfolio-core' ),
 					'name'         => 'architecture',
 					'type'         => 'textarea',
-					'instructions' => __( 'テキストによる構成図。等幅フォントでそのまま表示されます。', 'portfolio-core' ),
-					'rows'         => 8,
+					'instructions' => __(
+						'1 行の簡易記法で入力すると SVG の構成図として描画されます。<br>'
+						. '例: <code>Client -&gt; Load Balancer -&gt; *Go API (Echo)* -&gt; PostgreSQL, Redis</code><br>'
+						. '<code>-&gt;</code> で列を区切り、<code>,</code> で同じ列に並べ、<code>*</code> で囲むと強調表示になります。<br>'
+						. '記法に合わない入力（改行を含む図など）は、これまでどおり等幅フォントでそのまま表示されます。',
+						'portfolio-core'
+					),
+					'rows'         => 4,
 				),
 			),
 		)

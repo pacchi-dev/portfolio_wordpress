@@ -92,7 +92,7 @@ while ( have_posts() ) :
 		<?php if ( '' !== trim( $mp_arch ) ) : ?>
 			<section class="work-single__block">
 				<h2 class="work-single__heading"><?php esc_html_e( 'アーキテクチャ', 'pacchi-portfolio' ); ?></h2>
-				<pre class="arch-diagram"><?php echo esc_html( $mp_arch ); ?></pre>
+				<?php mp_render_architecture( $mp_arch ); ?>
 			</section>
 		<?php endif; ?>
 

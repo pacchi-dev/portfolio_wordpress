@@ -1,0 +1,53 @@
+[
+  {
+    "slug": "go-booking-api",
+    "title": "Production-like Go Backend API",
+    "image": "go-booking-api.png",
+    "imageAlt": "Client から Load Balancer を経て Go API (Echo) へ、その先に PostgreSQL と Redis が接続される構成図",
+    "period": "2026.09 -",
+    "status": "development",
+    "githubUrl": "",
+    "summary": "実運用を想定した予約管理 API。認証・キャッシュ・テスト・CI までを含め、設計判断を README に明文化している。",
+    "responsibilities": [
+      "Echo と PostgreSQL による REST API の実装",
+      "JWT による認証・認可の実装",
+      "Redis を用いたキャッシュ戦略の設計",
+      "OpenAPI によるスキーマ定義とコード生成",
+      "GitHub Actions による CI（テスト・lint・ビルド）"
+    ],
+    "architecture": "Client -> Load Balancer -> *Go API (Echo)* -> PostgreSQL, Redis",
+    "tech": [
+      "docker",
+      "echo",
+      "github-actions",
+      "go",
+      "openapi",
+      "postgresql",
+      "redis"
+    ]
+  },
+  {
+    "slug": "wordpress-portfolio",
+    "title": "WordPress ポートフォリオサイト",
+    "image": "wordpress-portfolio.png",
+    "imageAlt": "WordPress で構築したポートフォリオサイトのトップページ",
+    "period": "2026.09 -",
+    "status": "development",
+    "githubUrl": "",
+    "summary": "オリジナルテーマと自作プラグインで構築したポートフォリオ。カスタム投稿タイプ、ACF、外部 API 連携、自作フォームを含む。",
+    "responsibilities": [
+      "クラシックテーマをフルスクラッチで実装",
+      "カスタム投稿タイプとタクソノミーを自作プラグインで提供",
+      "ACF によるコンテンツの管理画面化",
+      "GitHub API 連携（Transients によるキャッシュと障害時フォールバック）",
+      "nonce・サニタイズ・wp_mail による問い合わせフォームの自作"
+    ],
+    "architecture": "",
+    "tech": [
+      "docker",
+      "mysql",
+      "php",
+      "wordpress"
+    ]
+  }
+]

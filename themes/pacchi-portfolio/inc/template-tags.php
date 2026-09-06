@@ -208,25 +208,66 @@ function mp_primary_menu( string $list_class ): void {
 		return;
 	}
 
-	// メニュー未設定時のフォールバック。
-	$items = array(
+	/*
+	 * メニュー未設定時のフォールバック。
+	 *
+	 * トップページ内のアンカーだけでなく、投稿タイプアーカイブ（/works/）も
+	 * 並べる必要があるため、「スラッグ => ラベル」ではなく
+	 * URL を組み立て済みの配列として持つ。
+	 */
+	$items = array();
+
+	$anchors_before = array(
 		'about'      => __( 'About', 'pacchi-portfolio' ),
 		'services'   => __( 'What I Do', 'pacchi-portfolio' ),
 		'skills'     => __( 'Skills', 'pacchi-portfolio' ),
 		'experience' => __( 'Experience', 'pacchi-portfolio' ),
-		'github'     => __( 'GitHub', 'pacchi-portfolio' ),
-		'ai'         => __( 'AI Development', 'pacchi-portfolio' ),
-		'work'       => __( 'Work With Me', 'pacchi-portfolio' ),
-		'contact'    => __( 'Contact', 'pacchi-portfolio' ),
 	);
+
+	foreach ( $anchors_before as $anchor => $label ) {
+		$items[] = array(
+			'url'   => home_url( '/#' . $anchor ),
+			'label' => $label,
+		);
+	}
+
+	/*
+	 * 制作実績は CPT `work` のアーカイブで、トップページ内のセクションではない。
+	 * URL を '/works/' と直書きせず get_post_type_archive_link() を使うことで、
+	 * register_post_type() の rewrite スラッグやパーマリンク設定を変えても
+	 * リンクが壊れなくなる。CPT が未登録なら false を返すため、
+	 * プラグイン無効時に空リンクを出さない防御にもなる。
+	 */
+	$works_url = get_post_type_archive_link( 'work' );
+
+	if ( $works_url ) {
+		$items[] = array(
+			'url'   => $works_url,
+			'label' => __( 'Works', 'pacchi-portfolio' ),
+		);
+	}
+
+	$anchors_after = array(
+		'github'  => __( 'GitHub', 'pacchi-portfolio' ),
+		'ai'      => __( 'AI Development', 'pacchi-portfolio' ),
+		'work'    => __( 'Work With Me', 'pacchi-portfolio' ),
+		'contact' => __( 'Contact', 'pacchi-portfolio' ),
+	);
+
+	foreach ( $anchors_after as $anchor => $label ) {
+		$items[] = array(
+			'url'   => home_url( '/#' . $anchor ),
+			'label' => $label,
+		);
+	}
 
 	printf( '<ul class="%s">', esc_attr( $list_class ) );
 
-	foreach ( $items as $anchor => $label ) {
+	foreach ( $items as $item ) {
 		printf(
 			'<li><a href="%1$s">%2$s</a></li>',
-			esc_url( home_url( '/#' . $anchor ) ),
-			esc_html( $label )
+			esc_url( $item['url'] ),
+			esc_html( $item['label'] )
 		);
 	}
 
@@ -263,4 +304,204 @@ function mp_service_icon( string $key ): void {
 			)
 		)
 	);
+}
+
+/**
+ * アーキテクチャ図を SVG で出力する。
+ *
+ * ACF のテキストエリアに書いた簡易記法をパースして描画する。
+ *
+ *   Client -> Load Balancer -> *Go API (Echo)* -> PostgreSQL, Redis
+ *
+ *   ->  列（処理の流れ）の区切り。矢印でつなぐ
+ *   ,   同じ列に並ぶノード（分岐）
+ *   *   前後を囲むとアクセント色になる
+ *
+ * ASCII アートを <pre> で出す方式は、全角と半角が混在すると桁が揃わず、
+ * 実際に本サイトでも図が崩れていた。SVG にすることで
+ *   - 桁揃えの問題が消える
+ *   - 画像ファイルを増やさない（リクエストが増えない）
+ *   - currentColor でテーマの配色に追従する
+ *   - 拡大しても劣化しない
+ * を同時に満たす。
+ *
+ * 記法として解釈できない文字列は、従来どおり <pre> にフォールバックする。
+ * 既存の入力を壊さないための保険で、移行を伴う実装では定石。
+ *
+ * @param string $source ACF に入力された図の定義。
+ */
+function mp_render_architecture( string $source ): void {
+	$source = trim( $source );
+
+	if ( '' === $source ) {
+		return;
+	}
+
+	$columns = mp_parse_architecture( $source );
+
+	if ( empty( $columns ) ) {
+		// 記法として解釈できないので、そのまま整形済みテキストとして出す。
+		printf( '<pre class="arch-diagram">%s</pre>', esc_html( $source ) );
+		return;
+	}
+
+	mp_output_architecture_svg( $columns );
+}
+
+/**
+ * 簡易記法を列の配列へパースする。
+ *
+ * @param string $source 入力文字列。
+ * @return array<int, array<int, array{label: string, accent: bool}>> 解釈できない場合は空配列。
+ */
+function mp_parse_architecture( string $source ): array {
+	// 改行を含む従来の ASCII アートは対象外。1 行の記法だけを扱う。
+	if ( preg_match( '/\R/', $source ) ) {
+		return array();
+	}
+
+	// 全角矢印も受け付ける。
+	$normalized = str_replace( array( '→', '＞' ), array( '->', '>' ), $source );
+
+	if ( ! str_contains( $normalized, '->' ) ) {
+		return array();
+	}
+
+	$columns = array();
+
+	foreach ( explode( '->', $normalized ) as $column_source ) {
+		$nodes = array();
+
+		foreach ( preg_split( '/[,、]/', $column_source ) as $node_source ) {
+			$label = trim( (string) $node_source );
+
+			if ( '' === $label ) {
+				continue;
+			}
+
+			// *…* で囲まれていればアクセント扱い。
+			$accent = (bool) preg_match( '/^\*(.+)\*$/u', $label, $matches );
+
+			if ( $accent ) {
+				$label = trim( $matches[1] );
+			}
+
+			$nodes[] = array(
+				'label'  => $label,
+				'accent' => $accent,
+			);
+		}
+
+		if ( empty( $nodes ) ) {
+			return array();
+		}
+
+		$columns[] = $nodes;
+	}
+
+	return count( $columns ) >= 2 ? $columns : array();
+}
+
+/**
+ * 文字列の表示幅を返す（全角を 2、半角を 1 として数える）。
+ *
+ * SVG はテキストの実寸を自動で測ってくれないため、
+ * ボックスの幅を自前で見積もる必要がある。
+ * mb_strwidth() は全角/半角の判定を標準で行う。
+ *
+ * @param string $text 対象文字列。
+ * @return int 表示幅。
+ */
+function mp_text_width( string $text ): int {
+	return mb_strwidth( $text, 'UTF-8' );
+}
+
+/**
+ * パース済みの列から SVG を出力する。
+ *
+ * @param array<int, array<int, array{label: string, accent: bool}>> $columns 列の配列。
+ */
+function mp_output_architecture_svg( array $columns ): void {
+	// レイアウト定数（px）。等幅フォント 13px を前提に見積もる。
+	$char_w     = 7.9;   // 半角 1 文字ぶんの横幅
+	$pad_x      = 16.0;  // ボックス左右の内側余白
+	$box_h      = 44.0;  // ボックスの高さ
+	$row_gap    = 14.0;  // 同じ列に積むノードの間隔
+	$col_gap    = 46.0;  // 列と列の間隔（矢印を描く幅）
+	$margin     = 2.0;   // 枠線が切れないための余白
+
+	// 各列の幅と高さを先に計算する。
+	$col_widths  = array();
+	$col_heights = array();
+
+	foreach ( $columns as $index => $nodes ) {
+		$width = 0.0;
+
+		foreach ( $nodes as $node ) {
+			$width = max( $width, mp_text_width( $node['label'] ) * $char_w + $pad_x * 2 );
+		}
+
+		$col_widths[ $index ]  = round( $width, 1 );
+		$col_heights[ $index ] = count( $nodes ) * $box_h + ( count( $nodes ) - 1 ) * $row_gap;
+	}
+
+	$total_w = array_sum( $col_widths ) + $col_gap * ( count( $columns ) - 1 ) + $margin * 2;
+	$total_h = max( $col_heights ) + $margin * 2;
+
+	printf(
+		'<div class="arch-svg"><svg viewBox="0 0 %1$s %2$s" width="%1$s" height="%2$s" role="img" aria-label="%3$s" xmlns="http://www.w3.org/2000/svg">',
+		esc_attr( (string) round( $total_w ) ),
+		esc_attr( (string) round( $total_h ) ),
+		esc_attr__( 'システム構成図', 'pacchi-portfolio' )
+	);
+
+	// 矢印の先端。SVG では marker を defs に定義して参照する。
+	echo '<defs><marker id="arch-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse">'
+		. '<path d="M0 0 L8 4 L0 8 z" fill="currentColor" /></marker></defs>';
+
+	$x = $margin;
+
+	foreach ( $columns as $index => $nodes ) {
+		$col_w = $col_widths[ $index ];
+		$y     = $margin + ( $total_h - $margin * 2 - $col_heights[ $index ] ) / 2;
+
+		foreach ( $nodes as $node ) {
+			$class = $node['accent'] ? 'arch-svg__box arch-svg__box--accent' : 'arch-svg__box';
+
+			printf(
+				'<rect class="%1$s" x="%2$s" y="%3$s" width="%4$s" height="%5$s" rx="8" />',
+				esc_attr( $class ),
+				esc_attr( (string) round( $x, 1 ) ),
+				esc_attr( (string) round( $y, 1 ) ),
+				esc_attr( (string) $col_w ),
+				esc_attr( (string) $box_h )
+			);
+
+			printf(
+				'<text class="%1$s" x="%2$s" y="%3$s" text-anchor="middle" dominant-baseline="central">%4$s</text>',
+				esc_attr( $node['accent'] ? 'arch-svg__label arch-svg__label--accent' : 'arch-svg__label' ),
+				esc_attr( (string) round( $x + $col_w / 2, 1 ) ),
+				esc_attr( (string) round( $y + $box_h / 2, 1 ) ),
+				esc_html( $node['label'] )
+			);
+
+			$y += $box_h + $row_gap;
+		}
+
+		// 次の列があれば矢印でつなぐ。
+		if ( isset( $columns[ $index + 1 ] ) ) {
+			$arrow_y = round( $total_h / 2, 1 );
+
+			printf(
+				'<line class="arch-svg__arrow" x1="%1$s" y1="%2$s" x2="%3$s" y2="%2$s" marker-end="url(#arch-arrow)" />',
+				esc_attr( (string) round( $x + $col_w + 12, 1 ) ),
+				esc_attr( (string) $arrow_y ),
+				esc_attr( (string) round( $x + $col_w + $col_gap - 12, 1 ) )
+			);
+		}
+
+		$x += $col_w + $col_gap;
+	}
+
+	echo '</svg></div>';
 }

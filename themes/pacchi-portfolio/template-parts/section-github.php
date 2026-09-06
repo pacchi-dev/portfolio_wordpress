@@ -29,7 +29,8 @@ mp_section_open(
 		'eyebrow' => 'github activity',
 		'title'   => __( '公開リポジトリ', 'pacchi-portfolio' ),
 		'lead'    => __( 'GitHub API から取得した公開リポジトリです。1 時間キャッシュし、取得に失敗した場合は直前の内容を表示します。', 'pacchi-portfolio' ),
-		'open'    => false,
+		// 外部 API 連携が実際に動いていることを示すセクションなので開いておく。
+		'open'    => true,
 	)
 );
 ?>

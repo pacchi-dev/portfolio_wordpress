@@ -35,7 +35,12 @@ mp_section_open(
 		'title'   => (string) get_field( 'services_title', $mp_page_id ),
 		'lead'    => (string) get_field( 'services_lead', $mp_page_id ),
 		'surface' => true,
-		'open'    => false,
+		/*
+		 * 発注可否を判断するセクションなので、初期状態で開いておく。
+		 * details は閉じていると中身が読まれないうえ、
+		 * ページ内検索（Ctrl+F）でもヒットしない。
+		 */
+		'open'    => true,
 	)
 );
 ?>
