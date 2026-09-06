@@ -100,7 +100,7 @@ function pc_register_front_page_fields(): void {
 					'label'        => __( '主要技術', 'portfolio-core' ),
 					'name'         => 'hero_stack',
 					'type'         => 'textarea',
-					'instructions' => __( '1 行につき 1 つ。3 つ程度が目安。', 'portfolio-core' ),
+					'instructions' => __( '1 行につき 1 つ。3〜4 つが目安。増やしすぎるとヒーローが窮屈になります。', 'portfolio-core' ),
 					'rows'         => 4,
 				),
 				array(

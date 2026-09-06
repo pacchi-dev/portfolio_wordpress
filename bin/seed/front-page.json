@@ -3,11 +3,12 @@
     "name": "pacchi",
     "role": "Backend Engineer",
     "stack": [
+      "WordPress",
       "Go",
       "PHP / Laravel",
       "AWS"
     ],
-    "heroLead": "Webサービスのバックエンドを中心に、要件整理・API/DB設計から実装・AWS環境での運用まで一貫して対応します。",
+    "heroLead": "WordPress サイトの制作・改修から、Web システムの設計・開発・運用まで対応します。バックエンドと AWS を軸に、要件整理から一貫して引き受けます。",
     "availabilityLabel": "副業・業務委託のご相談を受付中",
     "highlights": [
       {
