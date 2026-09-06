@@ -62,6 +62,14 @@ function mp_theme_setup(): void {
 
 	// 添付画像のサイズ。制作実績のカード用。
 	add_image_size( 'mp-work-card', 720, 405, true );
+
+	/*
+	 * プロフィール画像。表示は 56px なので 2 倍の 112px を用意する。
+	 * 第 4 引数の true はハードクロップ（正方形に切り抜く）。
+	 * false だと縦横比を保って縮小するため、正方形でない画像を入れられたときに
+	 * 円形マスクの中で位置がずれる。
+	 */
+	add_image_size( 'mp-avatar', 112, 112, true );
 }
 
 /**

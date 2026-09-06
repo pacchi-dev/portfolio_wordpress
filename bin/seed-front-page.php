@@ -109,6 +109,19 @@ update_field( 'about_body', implode( "\n\n", (array) ( $profile['about'] ?? arra
 // ---------------------------------------------------------------------------
 WP_CLI::log( '==> What I Do を投入します' );
 
+/*
+ * プロフィール画像。
+ * seed-works.php と同じくローカルファイルから取り込み、
+ * 環境を作り直しても再現できるようにする。
+ */
+require_once '/scripts/seed-lib.php';
+
+$avatar_id = pc_seed_import_image( 'avatar.png', 'pacchi', $page_id );
+
+if ( $avatar_id ) {
+	update_field( 'hero_avatar', $avatar_id, $page_id );
+}
+
 update_field( 'services_title', '対応できる領域', $page_id );
 update_field( 'services_lead', '実装だけでなく、要件の整理から公開後の保守運用まで一貫して対応します。お気軽にご相談ください。', $page_id );
 

@@ -160,10 +160,12 @@ docker exec portfolio_wp_cli wp --path=/var/www/html eval-file /scripts/seed-wor
 
 いずれのスクリプトも冪等です。何度実行しても投稿・画像は重複しません。
 
-`seed-works.php` は制作実績の投稿に加えて、`bin/seed/images/` の画像を
-メディアライブラリへ取り込みアイキャッチとして設定します。
+画像は `bin/seed/images/` に置いた元ファイルをメディアライブラリへ取り込みます
+（`seed-front-page.php` はプロフィール画像、`seed-works.php` は制作実績のアイキャッチ）。
+取り込み処理は両方から使うため `bin/seed-lib.php` に切り出しています。
+
 `uploads/` は Git 管理外のため、環境を作り直しても画像を再現できるよう
-元画像をリポジトリ側（`bin/seed/images/`）に置いています。
+元画像をリポジトリ側に置いています。
 
 ### Git 管理の方針
 

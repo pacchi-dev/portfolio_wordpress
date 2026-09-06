@@ -81,6 +81,21 @@ function pc_register_front_page_fields(): void {
 					'type'  => 'text',
 				),
 				array(
+					/*
+					 * 固定ページのアイキャッチではなく専用フィールドにしている。
+					 * アイキャッチは inc/seo.php の mp_og_image_url() が
+					 * og:image に使うため、ここに顔写真を入れると
+					 * SNS 共有時のカード画像が丸いアイコンに置き換わってしまう。
+					 */
+					'key'           => 'field_pc_hero_avatar',
+					'label'         => __( 'プロフィール画像', 'portfolio-core' ),
+					'name'          => 'hero_avatar',
+					'type'          => 'image',
+					'return_format' => 'id',
+					'preview_size'  => 'thumbnail',
+					'instructions'  => __( '氏名の左に円形で表示します。正方形の画像を推奨。未設定なら表示されません。', 'portfolio-core' ),
+				),
+				array(
 					'key'          => 'field_pc_hero_stack',
 					'label'        => __( '主要技術', 'portfolio-core' ),
 					'name'         => 'hero_stack',

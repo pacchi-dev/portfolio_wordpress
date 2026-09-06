@@ -36,6 +36,7 @@ foreach ( array( 'item_1', 'item_2', 'item_3' ) as $key ) {
 }
 
 $github_url = (string) get_field( 'contact_github', $mp_page_id );
+$avatar_id  = (int) get_field( 'hero_avatar', $mp_page_id );
 ?>
 
 <section id="top" class="hero">
@@ -56,7 +57,29 @@ $github_url = (string) get_field( 'contact_github', $mp_page_id );
 			</h1>
 
 			<?php if ( '' !== $name ) : ?>
-				<p class="hero__name"><?php echo esc_html( $name ); ?></p>
+				<p class="hero__name">
+					<?php if ( $avatar_id > 0 ) : ?>
+						<?php
+						/*
+						 * wp_get_attachment_image() は srcset / sizes / loading を
+						 * 自動で付与する。img を手書きするとこれらを失う。
+						 * ここはファーストビューなので loading は eager にする
+						 * （lazy にすると LCP 候補の読み込みが遅れる）。
+						 */
+						echo wp_get_attachment_image(
+							$avatar_id,
+							'mp-avatar',
+							false,
+							array(
+								'class'   => 'hero__avatar',
+								'alt'     => esc_attr( $name ),
+								'loading' => 'eager',
+							)
+						);
+						?>
+					<?php endif; ?>
+					<span><?php echo esc_html( $name ); ?></span>
+				</p>
 			<?php endif; ?>
 
 			<?php if ( ! empty( $stack ) ) : ?>
