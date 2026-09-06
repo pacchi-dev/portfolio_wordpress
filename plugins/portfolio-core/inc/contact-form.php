@@ -138,7 +138,7 @@ function pc_handle_contact_form(): void {
 			__( 'サイトのお問い合わせフォームから送信されました。', 'portfolio-core' ),
 			'',
 			__( 'お名前:', 'portfolio-core' ) . ' ' . $name,
-			__( 'メールアドレス:', 'portfolio-core' ) . ' ' . $email,
+			__( '返信先メールアドレス:', 'portfolio-core' ) . ' ' . $email,
 			__( '件名:', 'portfolio-core' ) . ' ' . $subject,
 			'',
 			__( '本文:', 'portfolio-core' ),

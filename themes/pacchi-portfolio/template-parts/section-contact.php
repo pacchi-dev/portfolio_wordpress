@@ -125,7 +125,7 @@ endif;
 			<input type="text" id="pc_name" name="pc_name" required maxlength="100" autocomplete="name">
 		</p>
 		<p class="field">
-			<label for="pc_email"><?php esc_html_e( 'メールアドレス', 'pacchi-portfolio' ); ?> <span class="field__required">*</span></label>
+			<label for="pc_email"><?php esc_html_e( '返信先メールアドレス', 'pacchi-portfolio' ); ?> <span class="field__required">*</span></label>
 			<input type="email" id="pc_email" name="pc_email" required maxlength="200" autocomplete="email">
 		</p>
 	</div>
