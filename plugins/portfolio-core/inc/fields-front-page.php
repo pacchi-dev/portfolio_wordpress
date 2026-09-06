@@ -83,7 +83,7 @@ function pc_register_front_page_fields(): void {
 				array(
 					/*
 					 * 固定ページのアイキャッチではなく専用フィールドにしている。
-					 * アイキャッチは inc/seo.php の mp_og_image_url() が
+					 * アイキャッチは inc/seo.php の pp_og_image_url() が
 					 * og:image に使うため、ここに顔写真を入れると
 					 * SNS 共有時のカード画像が丸いアイコンに置き換わってしまう。
 					 */

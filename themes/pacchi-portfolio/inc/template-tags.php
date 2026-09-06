@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) || exit;
  * @param string|null $text 改行区切りのテキスト。
  * @return string[]
  */
-function mp_lines_to_array( ?string $text ): array {
+function pp_lines_to_array( ?string $text ): array {
 	if ( null === $text || '' === trim( $text ) ) {
 		return array();
 	}
@@ -57,7 +57,7 @@ function mp_lines_to_array( ?string $text ): array {
  * @param string   $list_class ul に付けるクラス。
  * @param string   $item_class li に付けるクラス。
  */
-function mp_render_list( array $items, string $list_class = '', string $item_class = '' ): void {
+function pp_render_list( array $items, string $list_class = '', string $item_class = '' ): void {
 	if ( empty( $items ) ) {
 		return;
 	}
@@ -81,7 +81,7 @@ function mp_render_list( array $items, string $list_class = '', string $item_cla
  * @param string[] $items 表示する文字列。
  * @param string   $tone  'default' | 'accent' | 'muted'。
  */
-function mp_render_tags( array $items, string $tone = 'default' ): void {
+function pp_render_tags( array $items, string $tone = 'default' ): void {
 	if ( empty( $items ) ) {
 		return;
 	}
@@ -114,7 +114,7 @@ function mp_render_tags( array $items, string $tone = 'default' ): void {
  *     open?: bool,
  * } $args セクションの設定。
  */
-function mp_section_open( array $args ): void {
+function pp_section_open( array $args ): void {
 	$id      = (string) ( $args['id'] ?? '' );
 	$title   = (string) ( $args['title'] ?? '' );
 	$eyebrow = (string) ( $args['eyebrow'] ?? '' );
@@ -149,7 +149,7 @@ function mp_section_open( array $args ): void {
 	);
 
 	echo '</span>';
-	mp_icon_chevron( 'section__chevron' );
+	pp_icon_chevron( 'section__chevron' );
 	echo '</span></summary>';
 
 	echo '<div class="section__body">';
@@ -165,7 +165,7 @@ function mp_section_open( array $args ): void {
 /**
  * 開閉セクションの終了タグを出力する。
  */
-function mp_section_close(): void {
+function pp_section_close(): void {
 	echo '</div></details></section>';
 }
 
@@ -174,7 +174,7 @@ function mp_section_close(): void {
  *
  * @param string $class SVG に付けるクラス。
  */
-function mp_icon_chevron( string $class = '' ): void {
+function pp_icon_chevron( string $class = '' ): void {
 	printf(
 		'<svg class="%s" width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" /></svg>',
 		esc_attr( $class )
@@ -193,7 +193,7 @@ function mp_icon_chevron( string $class = '' ): void {
  *
  * @param string $list_class ul に付けるクラス。
  */
-function mp_primary_menu( string $list_class ): void {
+function pp_primary_menu( string $list_class ): void {
 	if ( has_nav_menu( 'primary' ) ) {
 		wp_nav_menu(
 			array(
@@ -294,7 +294,7 @@ function mp_primary_menu( string $list_class ): void {
  *
  * @param string $key アイコンの種類。
  */
-function mp_service_icon( string $key ): void {
+function pp_service_icon( string $key ): void {
 	$paths = array(
 		'backend' => '<rect x="3" y="4" width="18" height="7" rx="1.5" /><rect x="3" y="13" width="18" height="7" rx="1.5" /><path d="M6.5 7.5h.01M6.5 16.5h.01M10 7.5h4M10 16.5h4" />',
 		'cloud'   => '<path d="M17.5 18.5h-11a4 4 0 0 1-.6-7.96 5.5 5.5 0 0 1 10.73-1.4A4.5 4.5 0 0 1 17.5 18.5Z" />',
@@ -344,14 +344,14 @@ function mp_service_icon( string $key ): void {
  *
  * @param string $source ACF に入力された図の定義。
  */
-function mp_render_architecture( string $source ): void {
+function pp_render_architecture( string $source ): void {
 	$source = trim( $source );
 
 	if ( '' === $source ) {
 		return;
 	}
 
-	$columns = mp_parse_architecture( $source );
+	$columns = pp_parse_architecture( $source );
 
 	if ( empty( $columns ) ) {
 		// 記法として解釈できないので、そのまま整形済みテキストとして出す。
@@ -359,7 +359,7 @@ function mp_render_architecture( string $source ): void {
 		return;
 	}
 
-	mp_output_architecture_svg( $columns );
+	pp_output_architecture_svg( $columns );
 }
 
 /**
@@ -368,7 +368,7 @@ function mp_render_architecture( string $source ): void {
  * @param string $source 入力文字列。
  * @return array<int, array<int, array{label: string, accent: bool}>> 解釈できない場合は空配列。
  */
-function mp_parse_architecture( string $source ): array {
+function pp_parse_architecture( string $source ): array {
 	// 改行を含む従来の ASCII アートは対象外。1 行の記法だけを扱う。
 	if ( preg_match( '/\R/', $source ) ) {
 		return array();
@@ -426,7 +426,7 @@ function mp_parse_architecture( string $source ): array {
  * @param string $text 対象文字列。
  * @return int 表示幅。
  */
-function mp_text_width( string $text ): int {
+function pp_text_width( string $text ): int {
 	return mb_strwidth( $text, 'UTF-8' );
 }
 
@@ -435,7 +435,7 @@ function mp_text_width( string $text ): int {
  *
  * @param array<int, array<int, array{label: string, accent: bool}>> $columns 列の配列。
  */
-function mp_output_architecture_svg( array $columns ): void {
+function pp_output_architecture_svg( array $columns ): void {
 	// レイアウト定数（px）。等幅フォント 13px を前提に見積もる。
 	$char_w     = 7.9;   // 半角 1 文字ぶんの横幅
 	$pad_x      = 16.0;  // ボックス左右の内側余白
@@ -452,7 +452,7 @@ function mp_output_architecture_svg( array $columns ): void {
 		$width = 0.0;
 
 		foreach ( $nodes as $node ) {
-			$width = max( $width, mp_text_width( $node['label'] ) * $char_w + $pad_x * 2 );
+			$width = max( $width, pp_text_width( $node['label'] ) * $char_w + $pad_x * 2 );
 		}
 
 		$col_widths[ $index ]  = round( $width, 1 );
@@ -530,7 +530,7 @@ function mp_output_architecture_svg( array $columns ): void {
  * @param array<string, array<int, array{name: string, slug: string, level: string}>>   $grouped    カテゴリごとの技術。
  * @param array<string, string>                                                        $level_tone レベルとタグの見た目の対応。
  */
-function mp_render_skill_grid( array $categories, array $grouped, array $level_tone ): void {
+function pp_render_skill_grid( array $categories, array $grouped, array $level_tone ): void {
 	$has_any = false;
 
 	foreach ( $categories as $key => $label ) {

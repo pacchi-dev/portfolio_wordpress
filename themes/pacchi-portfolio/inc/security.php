@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) || exit;
  * 「本体の挙動を止める」のは hooks の代表的な使い方で、
  * 既存サイトの改修案件でも頻繁に使う。
  */
-add_action( 'init', 'mp_clean_wp_head' );
-function mp_clean_wp_head(): void {
+add_action( 'init', 'pp_clean_wp_head' );
+function pp_clean_wp_head(): void {
 
 	/*
 	 * <meta name="generator" content="WordPress 7.1" />
@@ -63,8 +63,8 @@ add_filter( 'xmlrpc_enabled', '__return_false' );
  * 初期状態では「ユーザー名が違う」「パスワードが違う」を区別して返すため、
  * ユーザー名の存在有無を推測できてしまう（ユーザー列挙）。
  */
-add_filter( 'login_errors', 'mp_generic_login_error' );
-function mp_generic_login_error(): string {
+add_filter( 'login_errors', 'pp_generic_login_error' );
+function pp_generic_login_error(): string {
 	return __( 'ログイン情報が正しくありません。', 'pacchi-portfolio' );
 }
 
@@ -80,8 +80,8 @@ function mp_generic_login_error(): string {
  * @param WP_Error|null|true $result 認証結果。
  * @return WP_Error|null|true
  */
-add_filter( 'rest_authentication_errors', 'mp_restrict_rest_user_endpoint' );
-function mp_restrict_rest_user_endpoint( $result ) {
+add_filter( 'rest_authentication_errors', 'pp_restrict_rest_user_endpoint' );
+function pp_restrict_rest_user_endpoint( $result ) {
 	// 既に他のフィルタがエラーを返している場合はそれを尊重する。
 	if ( ! empty( $result ) ) {
 		return $result;
@@ -108,8 +108,8 @@ function mp_restrict_rest_user_endpoint( $result ) {
  * ID から投稿者のログイン名を含む URL へリダイレクトされるため、
  * これもユーザー列挙の経路になる。1 人運用のサイトでは不要な機能。
  */
-add_action( 'template_redirect', 'mp_disable_author_archive' );
-function mp_disable_author_archive(): void {
+add_action( 'template_redirect', 'pp_disable_author_archive' );
+function pp_disable_author_archive(): void {
 	if ( is_author() ) {
 		global $wp_query;
 		$wp_query->set_404();

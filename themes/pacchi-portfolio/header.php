@@ -32,7 +32,7 @@ defined( 'ABSPATH' ) || exit;
 		</a>
 
 		<nav class="site-nav" aria-label="<?php esc_attr_e( 'セクション', 'pacchi-portfolio' ); ?>">
-			<?php mp_primary_menu( 'site-nav__list' ); ?>
+			<?php pp_primary_menu( 'site-nav__list' ); ?>
 		</nav>
 
 		<details class="mobile-nav" data-mobile-nav>
@@ -47,7 +47,7 @@ defined( 'ABSPATH' ) || exit;
 			</summary>
 
 			<nav class="mobile-nav__panel" aria-label="<?php esc_attr_e( 'セクション', 'pacchi-portfolio' ); ?>">
-				<?php mp_primary_menu( 'mobile-nav__list' ); ?>
+				<?php pp_primary_menu( 'mobile-nav__list' ); ?>
 			</nav>
 		</details>
 	</div>

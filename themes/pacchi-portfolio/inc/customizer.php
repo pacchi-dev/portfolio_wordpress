@@ -22,11 +22,11 @@ defined( 'ABSPATH' ) || exit;
  *
  * @param WP_Customize_Manager $wp_customize カスタマイザーのインスタンス。
  */
-add_action( 'customize_register', 'mp_customize_register' );
-function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
+add_action( 'customize_register', 'pp_customize_register' );
+function pp_customize_register( WP_Customize_Manager $wp_customize ): void {
 
 	$wp_customize->add_section(
-		'mp_site_options',
+		'pp_site_options',
 		array(
 			'title'       => __( 'サイト設定', 'pacchi-portfolio' ),
 			'description' => __( '受付状況やフッターなど、サイト全体に関わる表示設定。', 'pacchi-portfolio' ),
@@ -42,25 +42,25 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 	 * WordPress のレビューでも指摘される項目。
 	 */
 	$wp_customize->add_setting(
-		'mp_accepting_work',
+		'pp_accepting_work',
 		array(
 			'default'           => true,
-			'sanitize_callback' => 'mp_sanitize_checkbox',
+			'sanitize_callback' => 'pp_sanitize_checkbox',
 			'transport'         => 'refresh',
 		)
 	);
 
 	$wp_customize->add_control(
-		'mp_accepting_work',
+		'pp_accepting_work',
 		array(
-			'section' => 'mp_site_options',
+			'section' => 'pp_site_options',
 			'label'   => __( '副業・業務委託の相談を受け付ける', 'pacchi-portfolio' ),
 			'type'    => 'checkbox',
 		)
 	);
 
 	$wp_customize->add_setting(
-		'mp_availability_label',
+		'pp_availability_label',
 		array(
 			'default'           => '副業・業務委託のご相談を受付中',
 			'sanitize_callback' => 'sanitize_text_field',
@@ -69,13 +69,13 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 	);
 
 	$wp_customize->add_control(
-		'mp_availability_label',
+		'pp_availability_label',
 		array(
-			'section'         => 'mp_site_options',
+			'section'         => 'pp_site_options',
 			'label'           => __( '受付中の表示文言', 'pacchi-portfolio' ),
 			'type'            => 'text',
 			// 受付中がオフのときは入力欄を隠す。
-			'active_callback'  => static fn(): bool => (bool) get_theme_mod( 'mp_accepting_work', true ),
+			'active_callback'  => static fn(): bool => (bool) get_theme_mod( 'pp_accepting_work', true ),
 		)
 	);
 
@@ -91,18 +91,18 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 	 * 環境ごとに動く／動かないが変わるため。移設先で送信できるなら戻せる。
 	 */
 	$wp_customize->add_setting(
-		'mp_show_contact_form',
+		'pp_show_contact_form',
 		array(
 			'default'           => true,
-			'sanitize_callback' => 'mp_sanitize_checkbox',
+			'sanitize_callback' => 'pp_sanitize_checkbox',
 			'transport'         => 'refresh',
 		)
 	);
 
 	$wp_customize->add_control(
-		'mp_show_contact_form',
+		'pp_show_contact_form',
 		array(
-			'section'     => 'mp_site_options',
+			'section'     => 'pp_site_options',
 			'label'       => __( 'お問い合わせフォームを表示する', 'pacchi-portfolio' ),
 			'description' => __( 'メール送信ができないサーバーではオフにします。オフのときはメールアドレスの案内のみ表示されます。', 'pacchi-portfolio' ),
 			'type'        => 'checkbox',
@@ -110,7 +110,7 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 	);
 
 	$wp_customize->add_setting(
-		'mp_footer_tagline',
+		'pp_footer_tagline',
 		array(
 			'default'           => '// Backend Engineer — Go · PHP / Laravel · AWS',
 			'sanitize_callback' => 'sanitize_text_field',
@@ -119,9 +119,9 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 	);
 
 	$wp_customize->add_control(
-		'mp_footer_tagline',
+		'pp_footer_tagline',
 		array(
-			'section' => 'mp_site_options',
+			'section' => 'pp_site_options',
 			'label'   => __( 'フッターの表記', 'pacchi-portfolio' ),
 			'type'    => 'text',
 		)
@@ -136,7 +136,7 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
  * @param mixed $value 入力値。
  * @return bool
  */
-function mp_sanitize_checkbox( $value ): bool {
+function pp_sanitize_checkbox( $value ): bool {
 	return (bool) $value;
 }
 
@@ -145,8 +145,8 @@ function mp_sanitize_checkbox( $value ): bool {
  *
  * @return bool
  */
-function mp_is_accepting_work(): bool {
-	return (bool) get_theme_mod( 'mp_accepting_work', true );
+function pp_is_accepting_work(): bool {
+	return (bool) get_theme_mod( 'pp_accepting_work', true );
 }
 
 /**
@@ -154,6 +154,6 @@ function mp_is_accepting_work(): bool {
  *
  * @return string
  */
-function mp_availability_label(): string {
-	return (string) get_theme_mod( 'mp_availability_label', '副業・業務委託のご相談を受付中' );
+function pp_availability_label(): string {
+	return (string) get_theme_mod( 'pp_availability_label', '副業・業務委託のご相談を受付中' );
 }

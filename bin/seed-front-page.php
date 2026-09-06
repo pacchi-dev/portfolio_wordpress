@@ -92,8 +92,8 @@ foreach ( array_values( (array) ( $profile['highlights'] ?? array() ) ) as $i =>
 update_field( 'hero_highlights', $highlights, $page_id );
 
 // 受付状況はカスタマイザー側の設定。
-set_theme_mod( 'mp_accepting_work', true );
-set_theme_mod( 'mp_availability_label', (string) ( $profile['availabilityLabel'] ?? '副業・業務委託のご相談を受付中' ) );
+set_theme_mod( 'pp_accepting_work', true );
+set_theme_mod( 'pp_availability_label', (string) ( $profile['availabilityLabel'] ?? '副業・業務委託のご相談を受付中' ) );
 
 // ---------------------------------------------------------------------------
 // 3. About

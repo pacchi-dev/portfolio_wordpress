@@ -10,61 +10,61 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_page_id = (int) get_option( 'page_on_front' );
+$pp_page_id = (int) get_option( 'page_on_front' );
 
-$mp_email = (string) get_field( 'contact_email', $mp_page_id );
+$pp_email = (string) get_field( 'contact_email', $pp_page_id );
 
-$mp_links = array(
+$pp_links = array(
 	array(
 		'label' => __( 'Email', 'pacchi-portfolio' ),
-		'value' => $mp_email,
-		'href'  => '' !== $mp_email ? 'mailto:' . $mp_email : '',
+		'value' => $pp_email,
+		'href'  => '' !== $pp_email ? 'mailto:' . $pp_email : '',
 		'ext'   => false,
 	),
 	array(
 		'label' => __( 'GitHub', 'pacchi-portfolio' ),
 		'value' => __( 'プロフィール', 'pacchi-portfolio' ),
-		'href'  => (string) get_field( 'contact_github', $mp_page_id ),
+		'href'  => (string) get_field( 'contact_github', $pp_page_id ),
 		'ext'   => true,
 	),
 	array(
 		'label' => __( 'CrowdWorks', 'pacchi-portfolio' ),
 		'value' => __( 'プロフィール', 'pacchi-portfolio' ),
-		'href'  => (string) get_field( 'contact_crowdworks', $mp_page_id ),
+		'href'  => (string) get_field( 'contact_crowdworks', $pp_page_id ),
 		'ext'   => true,
 	),
 	array(
 		'label' => __( 'X', 'pacchi-portfolio' ),
 		'value' => __( 'プロフィール', 'pacchi-portfolio' ),
-		'href'  => (string) get_field( 'contact_x', $mp_page_id ),
+		'href'  => (string) get_field( 'contact_x', $pp_page_id ),
 		'ext'   => true,
 	),
 );
 
-$mp_links = array_values(
-	array_filter( $mp_links, static fn( array $l ): bool => '' !== trim( (string) $l['href'] ) )
+$pp_links = array_values(
+	array_filter( $pp_links, static fn( array $l ): bool => '' !== trim( (string) $l['href'] ) )
 );
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'contact',
 		'eyebrow' => 'contact',
-		'title'   => (string) get_field( 'contact_title', $mp_page_id ),
-		'lead'    => (string) get_field( 'contact_lead', $mp_page_id ),
+		'title'   => (string) get_field( 'contact_title', $pp_page_id ),
+		'lead'    => (string) get_field( 'contact_lead', $pp_page_id ),
 		'open'    => true,
 	)
 );
 ?>
 
-<?php if ( ! empty( $mp_links ) ) : ?>
+<?php if ( ! empty( $pp_links ) ) : ?>
 	<ul class="contact-list">
-		<?php foreach ( $mp_links as $mp_link ) : ?>
+		<?php foreach ( $pp_links as $pp_link ) : ?>
 			<li>
 				<a class="contact-card"
-					href="<?php echo esc_url( (string) $mp_link['href'] ); ?>"
-					<?php if ( $mp_link['ext'] ) : ?>target="_blank" rel="noreferrer noopener"<?php endif; ?>>
-					<span class="contact-card__label"><?php echo esc_html( (string) $mp_link['label'] ); ?></span>
-					<span class="contact-card__value"><?php echo esc_html( (string) $mp_link['value'] ); ?></span>
+					href="<?php echo esc_url( (string) $pp_link['href'] ); ?>"
+					<?php if ( $pp_link['ext'] ) : ?>target="_blank" rel="noreferrer noopener"<?php endif; ?>>
+					<span class="contact-card__label"><?php echo esc_html( (string) $pp_link['label'] ); ?></span>
+					<span class="contact-card__value"><?php echo esc_html( (string) $pp_link['value'] ); ?></span>
 				</a>
 			</li>
 		<?php endforeach; ?>
@@ -81,7 +81,7 @@ mp_section_open(
  * オフのときは上のメールアドレス案内だけが残る。
  * 「送信できたように見えて届かない」状態を作らないための切り替え。
  */
-if ( get_theme_mod( 'mp_show_contact_form', true ) ) :
+if ( get_theme_mod( 'pp_show_contact_form', true ) ) :
 	?>
 
 	<h3 class="contact-form__heading"><?php esc_html_e( 'メッセージを送る', 'pacchi-portfolio' ); ?></h3>
@@ -93,15 +93,15 @@ if ( get_theme_mod( 'mp_show_contact_form', true ) ) :
  * nonce 検証は不要（読み取り専用で副作用が無いため）だが、
  * 未検証の入力をそのまま出力しないことは必須。
  */
-$mp_status = isset( $_GET['contact'] ) ? sanitize_key( wp_unslash( (string) $_GET['contact'] ) ) : '';
-$mp_notice = ( '' !== $mp_status && function_exists( 'pc_contact_message' ) )
-	? pc_contact_message( $mp_status )
+$pp_status = isset( $_GET['contact'] ) ? sanitize_key( wp_unslash( (string) $_GET['contact'] ) ) : '';
+$pp_notice = ( '' !== $pp_status && function_exists( 'pc_contact_message' ) )
+	? pc_contact_message( $pp_status )
 	: null;
 
-if ( $mp_notice ) :
+if ( $pp_notice ) :
 	?>
-	<p class="form-notice form-notice--<?php echo esc_attr( $mp_notice['type'] ); ?>" role="status">
-		<?php echo esc_html( $mp_notice['message'] ); ?>
+	<p class="form-notice form-notice--<?php echo esc_attr( $pp_notice['type'] ); ?>" role="status">
+		<?php echo esc_html( $pp_notice['message'] ); ?>
 	</p>
 	<?php
 endif;
@@ -161,4 +161,4 @@ endif;
 	<?php
 endif;
 
-mp_section_close();
+pp_section_close();

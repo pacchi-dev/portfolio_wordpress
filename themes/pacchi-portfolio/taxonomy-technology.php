@@ -18,19 +18,19 @@ defined( 'ABSPATH' ) || exit;
 
 get_header();
 
-$mp_term = get_queried_object();
+$pp_term = get_queried_object();
 ?>
 
 <div class="page-head">
 	<div class="container">
 		<p class="section__eyebrow">// technology</p>
-		<h1 class="page-head__title"><?php echo esc_html( $mp_term instanceof WP_Term ? $mp_term->name : '' ); ?></h1>
+		<h1 class="page-head__title"><?php echo esc_html( $pp_term instanceof WP_Term ? $pp_term->name : '' ); ?></h1>
 		<p class="page-head__lead">
 			<?php
 			printf(
 				/* translators: %s: 技術名 */
 				esc_html__( '%s を使用した実務経験・制作実績です。', 'pacchi-portfolio' ),
-				esc_html( $mp_term instanceof WP_Term ? $mp_term->name : '' )
+				esc_html( $pp_term instanceof WP_Term ? $pp_term->name : '' )
 			);
 			?>
 		</p>
@@ -43,17 +43,17 @@ $mp_term = get_queried_object();
 			<?php
 			while ( have_posts() ) :
 				the_post();
-				$mp_type = get_post_type();
+				$pp_type = get_post_type();
 				?>
 				<li>
 					<a class="term-item" href="<?php the_permalink(); ?>">
 						<span class="term-item__type">
-							<?php echo esc_html( 'work' === $mp_type ? __( '制作実績', 'pacchi-portfolio' ) : __( '実務経験', 'pacchi-portfolio' ) ); ?>
+							<?php echo esc_html( 'work' === $pp_type ? __( '制作実績', 'pacchi-portfolio' ) : __( '実務経験', 'pacchi-portfolio' ) ); ?>
 						</span>
 						<span class="term-item__title text-balance-ja"><?php the_title(); ?></span>
-						<?php $mp_period = (string) get_field( 'period' ); ?>
-						<?php if ( '' !== $mp_period ) : ?>
-							<span class="term-item__period"><?php echo esc_html( $mp_period ); ?></span>
+						<?php $pp_period = (string) get_field( 'period' ); ?>
+						<?php if ( '' !== $pp_period ) : ?>
+							<span class="term-item__period"><?php echo esc_html( $pp_period ); ?></span>
 						<?php endif; ?>
 					</a>
 				</li>

@@ -25,22 +25,22 @@ defined( 'ABSPATH' ) || exit;
  * @param string $relative_path テーマディレクトリからの相対パス。
  * @return string
  */
-function mp_asset_version( string $relative_path ): string {
-	$file = MP_THEME_DIR . $relative_path;
+function pp_asset_version( string $relative_path ): string {
+	$file = PP_THEME_DIR . $relative_path;
 
 	if ( file_exists( $file ) ) {
 		return (string) filemtime( $file );
 	}
 
-	return MP_THEME_VERSION;
+	return PP_THEME_VERSION;
 }
 
 /**
  * フロント側のアセットを読み込む。
  * wp_enqueue_scripts はフロント表示用の hook（名前に反して CSS もここで扱う）。
  */
-add_action( 'wp_enqueue_scripts', 'mp_enqueue_assets' );
-function mp_enqueue_assets(): void {
+add_action( 'wp_enqueue_scripts', 'pp_enqueue_assets' );
+function pp_enqueue_assets(): void {
 
 	/*
 	 * Web フォント（セルフホスト）。
@@ -52,17 +52,17 @@ function mp_enqueue_assets(): void {
 	 */
 	wp_enqueue_style(
 		'mp-fonts',
-		MP_THEME_URI . '/assets/css/fonts.css',
+		PP_THEME_URI . '/assets/css/fonts.css',
 		array(),
-		mp_asset_version( '/assets/css/fonts.css' )
+		pp_asset_version( '/assets/css/fonts.css' )
 	);
 
 	// メインスタイル。フォントに依存させ、必ず後に読み込ませる。
 	wp_enqueue_style(
 		'mp-main',
-		MP_THEME_URI . '/assets/css/main.css',
+		PP_THEME_URI . '/assets/css/main.css',
 		array( 'mp-fonts' ),
-		mp_asset_version( '/assets/css/main.css' )
+		pp_asset_version( '/assets/css/main.css' )
 	);
 
 	/*
@@ -75,9 +75,9 @@ function mp_enqueue_assets(): void {
 	 */
 	wp_enqueue_script(
 		'mp-nav',
-		MP_THEME_URI . '/assets/js/nav.js',
+		PP_THEME_URI . '/assets/js/nav.js',
 		array(),
-		mp_asset_version( '/assets/js/nav.js' ),
+		pp_asset_version( '/assets/js/nav.js' ),
 		array(
 			'in_footer' => true,
 			'strategy'  => 'defer',
@@ -95,7 +95,7 @@ function mp_enqueue_assets(): void {
  * コールバック内から wp_head の優先度 1 に登録しても、
  * その時点では既に通過済みで実行されない。
  */
-add_action( 'wp_head', 'mp_preload_fonts', 1 );
+add_action( 'wp_head', 'pp_preload_fonts', 1 );
 
 /**
  * フォントファイルを preload する。
@@ -104,7 +104,7 @@ add_action( 'wp_head', 'mp_preload_fonts', 1 );
  * 指定が無いと preload したものが再利用されず二重にダウンロードされる。
  * 実装ミスとして非常に多い箇所。
  */
-function mp_preload_fonts(): void {
+function pp_preload_fonts(): void {
 	$fonts = array(
 		'/assets/fonts/inter-latin-var.woff2',
 		'/assets/fonts/jetbrains-mono-latin-var.woff2',
@@ -113,7 +113,7 @@ function mp_preload_fonts(): void {
 	foreach ( $fonts as $font ) {
 		printf(
 			'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
-			esc_url( MP_THEME_URI . $font )
+			esc_url( PP_THEME_URI . $font )
 		);
 	}
 }

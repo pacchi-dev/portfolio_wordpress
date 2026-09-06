@@ -24,8 +24,8 @@ defined( 'ABSPATH' ) || exit;
  *
  * @param PHPMailer\PHPMailer\PHPMailer $phpmailer PHPMailer インスタンス。
  */
-add_action( 'phpmailer_init', 'mp_local_smtp' );
-function mp_local_smtp( $phpmailer ): void {
+add_action( 'phpmailer_init', 'pp_local_smtp' );
+function pp_local_smtp( $phpmailer ): void {
 	// ローカル環境以外では何もしない。
 	if ( 'local' !== wp_get_environment_type() ) {
 		return;
@@ -49,8 +49,8 @@ function mp_local_smtp( $phpmailer ): void {
  * @param string $from 既定の送信元アドレス。
  * @return string
  */
-add_filter( 'wp_mail_from', 'mp_local_mail_from' );
-function mp_local_mail_from( string $from ): string {
+add_filter( 'wp_mail_from', 'pp_local_mail_from' );
+function pp_local_mail_from( string $from ): string {
 	if ( 'local' !== wp_get_environment_type() ) {
 		return $from;
 	}

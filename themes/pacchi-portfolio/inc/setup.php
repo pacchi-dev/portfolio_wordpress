@@ -12,8 +12,8 @@ defined( 'ABSPATH' ) || exit;
  * add_theme_support() は必ずこのタイミングで呼ぶ必要がある
  * （init より前でないと WordPress 側の初期化に間に合わない）。
  */
-add_action( 'after_setup_theme', 'mp_theme_setup' );
-function mp_theme_setup(): void {
+add_action( 'after_setup_theme', 'pp_theme_setup' );
+function pp_theme_setup(): void {
 
 	/*
 	 * <title> タグの出力を WordPress に任せる。
@@ -75,7 +75,7 @@ function mp_theme_setup(): void {
 /**
  * コンテンツ幅。埋め込みコンテンツの最大幅として WordPress が参照する。
  */
-add_action( 'after_setup_theme', 'mp_content_width', 0 );
-function mp_content_width(): void {
+add_action( 'after_setup_theme', 'pp_content_width', 0 );
+function pp_content_width(): void {
 	$GLOBALS['content_width'] = 1024;
 }

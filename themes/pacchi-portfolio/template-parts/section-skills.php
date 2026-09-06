@@ -10,7 +10,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_terms = get_terms(
+$pp_terms = get_terms(
 	array(
 		'taxonomy'   => 'technology',
 		'hide_empty' => false,
@@ -19,12 +19,12 @@ $mp_terms = get_terms(
 	)
 );
 
-if ( is_wp_error( $mp_terms ) || empty( $mp_terms ) ) {
+if ( is_wp_error( $pp_terms ) || empty( $pp_terms ) ) {
 	return;
 }
 
 // 表示用のカテゴリ定義。ACF の choices と対応させる。
-$mp_categories = array(
+$pp_categories = array(
 	'backend'  => __( 'Backend', 'pacchi-portfolio' ),
 	'cms'      => __( 'CMS', 'pacchi-portfolio' ),
 	'database' => __( 'Database / Cache', 'pacchi-portfolio' ),
@@ -34,53 +34,53 @@ $mp_categories = array(
 	'ai'       => __( 'AI', 'pacchi-portfolio' ),
 );
 
-$mp_level_order = array(
+$pp_level_order = array(
 	'main'        => 0,
 	'experienced' => 1,
 	'familiar'    => 2,
 );
 
-$mp_level_tone = array(
+$pp_level_tone = array(
 	'main'        => 'accent',
 	'experienced' => 'default',
 	'familiar'    => 'muted',
 );
 
 // カテゴリごとに仕分ける。
-$mp_grouped = array_fill_keys( array_keys( $mp_categories ), array() );
+$pp_grouped = array_fill_keys( array_keys( $pp_categories ), array() );
 
-foreach ( $mp_terms as $mp_term ) {
-	$category = (string) get_field( 'category', 'technology_' . $mp_term->term_id );
-	$level    = (string) get_field( 'level', 'technology_' . $mp_term->term_id );
-	$order    = (int) get_field( 'display_order', 'technology_' . $mp_term->term_id );
+foreach ( $pp_terms as $pp_term ) {
+	$category = (string) get_field( 'category', 'technology_' . $pp_term->term_id );
+	$level    = (string) get_field( 'level', 'technology_' . $pp_term->term_id );
+	$order    = (int) get_field( 'display_order', 'technology_' . $pp_term->term_id );
 
-	if ( ! isset( $mp_grouped[ $category ] ) ) {
+	if ( ! isset( $pp_grouped[ $category ] ) ) {
 		continue;
 	}
 
-	$mp_grouped[ $category ][] = array(
-		'name'  => $mp_term->name,
-		'slug'  => $mp_term->slug,
-		'level' => isset( $mp_level_order[ $level ] ) ? $level : 'experienced',
+	$pp_grouped[ $category ][] = array(
+		'name'  => $pp_term->name,
+		'slug'  => $pp_term->slug,
+		'level' => isset( $pp_level_order[ $level ] ) ? $level : 'experienced',
 		'order' => $order,
 	);
 }
 
 // Main → Experienced → Familiar の順に並べる。
-foreach ( $mp_grouped as $key => $items ) {
+foreach ( $pp_grouped as $key => $items ) {
 	usort(
 		$items,
-		static function ( array $a, array $b ) use ( $mp_level_order ): int {
-			$diff = $mp_level_order[ $a['level'] ] <=> $mp_level_order[ $b['level'] ];
+		static function ( array $a, array $b ) use ( $pp_level_order ): int {
+			$diff = $pp_level_order[ $a['level'] ] <=> $pp_level_order[ $b['level'] ];
 
 			return 0 !== $diff ? $diff : ( $a['order'] <=> $b['order'] );
 		}
 	);
 
-	$mp_grouped[ $key ] = $items;
+	$pp_grouped[ $key ] = $items;
 }
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'skills',
 		'eyebrow' => 'skills',
@@ -108,23 +108,23 @@ mp_section_open(
  * JavaScript を使わず details/summary で実装しているのは、
  * 本テーマの他セクションと挙動を揃えるため。
  */
-$mp_main  = array();
-$mp_rest  = array();
-$mp_rest_count = 0;
+$pp_main  = array();
+$pp_rest  = array();
+$pp_rest_count = 0;
 
-foreach ( $mp_grouped as $mp_key => $mp_items ) {
-	$mp_main[ $mp_key ] = array_values(
-		array_filter( $mp_items, static fn( array $i ): bool => 'main' === $i['level'] )
+foreach ( $pp_grouped as $pp_key => $pp_items ) {
+	$pp_main[ $pp_key ] = array_values(
+		array_filter( $pp_items, static fn( array $i ): bool => 'main' === $i['level'] )
 	);
-	$mp_rest[ $mp_key ] = array_values(
-		array_filter( $mp_items, static fn( array $i ): bool => 'main' !== $i['level'] )
+	$pp_rest[ $pp_key ] = array_values(
+		array_filter( $pp_items, static fn( array $i ): bool => 'main' !== $i['level'] )
 	);
-	$mp_rest_count += count( $mp_rest[ $mp_key ] );
+	$pp_rest_count += count( $pp_rest[ $pp_key ] );
 }
 
-mp_render_skill_grid( $mp_categories, $mp_main, $mp_level_tone );
+pp_render_skill_grid( $pp_categories, $pp_main, $pp_level_tone );
 
-if ( $mp_rest_count > 0 ) :
+if ( $pp_rest_count > 0 ) :
 	?>
 	<details class="skill-more">
 		<summary class="skill-more__summary">
@@ -132,14 +132,14 @@ if ( $mp_rest_count > 0 ) :
 				printf(
 					/* translators: %d: 折りたたまれている技術の件数 */
 					esc_html__( 'Experienced / Familiar もすべて表示（%d 件）', 'pacchi-portfolio' ),
-					(int) $mp_rest_count
+					(int) $pp_rest_count
 				);
 			?></span>
-			<?php mp_icon_chevron( 'skill-more__chevron' ); ?>
+			<?php pp_icon_chevron( 'skill-more__chevron' ); ?>
 		</summary>
-		<?php mp_render_skill_grid( $mp_categories, $mp_rest, $mp_level_tone ); ?>
+		<?php pp_render_skill_grid( $pp_categories, $pp_rest, $pp_level_tone ); ?>
 	</details>
 	<?php
 endif;
 
-mp_section_close();
+pp_section_close();

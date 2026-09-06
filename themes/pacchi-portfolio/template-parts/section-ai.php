@@ -7,28 +7,28 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_page_id = (int) get_option( 'page_on_front' );
-$mp_body    = (string) get_field( 'ai_body', $mp_page_id );
-$mp_points  = mp_lines_to_array( (string) get_field( 'ai_points', $mp_page_id ) );
-$mp_flow    = mp_lines_to_array( (string) get_field( 'ai_flow', $mp_page_id ) );
+$pp_page_id = (int) get_option( 'page_on_front' );
+$pp_body    = (string) get_field( 'ai_body', $pp_page_id );
+$pp_points  = pp_lines_to_array( (string) get_field( 'ai_points', $pp_page_id ) );
+$pp_flow    = pp_lines_to_array( (string) get_field( 'ai_flow', $pp_page_id ) );
 
-$mp_paragraphs = array_values(
+$pp_paragraphs = array_values(
 	array_filter(
-		array_map( 'trim', preg_split( '/\R{2,}/u', $mp_body ) ?: array() ),
+		array_map( 'trim', preg_split( '/\R{2,}/u', $pp_body ) ?: array() ),
 		static fn( string $p ): bool => '' !== $p
 	)
 );
 
-if ( empty( $mp_paragraphs ) && empty( $mp_points ) ) {
+if ( empty( $pp_paragraphs ) && empty( $pp_points ) ) {
 	return;
 }
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'ai',
 		'eyebrow' => 'ai development',
-		'title'   => (string) get_field( 'ai_title', $mp_page_id ),
-		'lead'    => (string) get_field( 'ai_lead', $mp_page_id ),
+		'title'   => (string) get_field( 'ai_title', $pp_page_id ),
+		'lead'    => (string) get_field( 'ai_lead', $pp_page_id ),
 		'open'    => false,
 	)
 );
@@ -37,21 +37,21 @@ mp_section_open(
 <div class="ai-layout">
 	<div>
 		<div class="prose">
-			<?php foreach ( $mp_paragraphs as $mp_paragraph ) : ?>
-				<p class="text-balance-ja"><?php echo esc_html( $mp_paragraph ); ?></p>
+			<?php foreach ( $pp_paragraphs as $pp_paragraph ) : ?>
+				<p class="text-balance-ja"><?php echo esc_html( $pp_paragraph ); ?></p>
 			<?php endforeach; ?>
 		</div>
 
-		<?php if ( ! empty( $mp_points ) ) : ?>
+		<?php if ( ! empty( $pp_points ) ) : ?>
 			<ul class="bullet-list bullet-list--accent">
-				<?php foreach ( $mp_points as $mp_point ) : ?>
-					<li class="text-balance-ja"><?php echo esc_html( $mp_point ); ?></li>
+				<?php foreach ( $pp_points as $pp_point ) : ?>
+					<li class="text-balance-ja"><?php echo esc_html( $pp_point ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>
 	</div>
 
-	<?php if ( ! empty( $mp_flow ) ) : ?>
+	<?php if ( ! empty( $pp_flow ) ) : ?>
 		<figure class="ai-flow">
 			<div class="terminal-card glow-card">
 				<div class="terminal-card__bar">
@@ -62,22 +62,22 @@ mp_section_open(
 				</div>
 				<ol class="terminal-card__body" aria-label="<?php esc_attr_e( 'AI を組み込んだ開発フロー', 'pacchi-portfolio' ); ?>">
 					<?php
-					$mp_last = count( $mp_flow ) - 1;
-					foreach ( $mp_flow as $mp_i => $mp_step ) :
-						if ( 0 === $mp_i ) {
-							$mp_marker = '$';
-							$mp_class  = 'is-first';
-						} elseif ( $mp_i === $mp_last ) {
-							$mp_marker = '✓';
-							$mp_class  = 'is-last';
+					$pp_last = count( $pp_flow ) - 1;
+					foreach ( $pp_flow as $pp_i => $pp_step ) :
+						if ( 0 === $pp_i ) {
+							$pp_marker = '$';
+							$pp_class  = 'is-first';
+						} elseif ( $pp_i === $pp_last ) {
+							$pp_marker = '✓';
+							$pp_class  = 'is-last';
 						} else {
-							$mp_marker = '→';
-							$mp_class  = '';
+							$pp_marker = '→';
+							$pp_class  = '';
 						}
 						?>
-						<li class="<?php echo esc_attr( $mp_class ); ?>">
-							<span class="terminal-card__marker" aria-hidden="true"><?php echo esc_html( $mp_marker ); ?></span>
-							<span><?php echo esc_html( $mp_step ); ?></span>
+						<li class="<?php echo esc_attr( $pp_class ); ?>">
+							<span class="terminal-card__marker" aria-hidden="true"><?php echo esc_html( $pp_marker ); ?></span>
+							<span><?php echo esc_html( $pp_step ); ?></span>
 						</li>
 					<?php endforeach; ?>
 				</ol>
@@ -88,4 +88,4 @@ mp_section_open(
 </div>
 
 <?php
-mp_section_close();
+pp_section_close();

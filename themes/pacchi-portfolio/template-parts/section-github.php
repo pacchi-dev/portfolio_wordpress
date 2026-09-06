@@ -17,13 +17,13 @@ if ( ! function_exists( 'pc_github_get_repositories' ) ) {
 	return;
 }
 
-$mp_repos = pc_github_get_repositories();
-$mp_error = is_wp_error( $mp_repos ) ? $mp_repos : null;
-$mp_items = $mp_error ? array() : array_slice( (array) $mp_repos, 0, 6 );
-$mp_langs = $mp_error ? array() : pc_github_language_stats( (array) $mp_repos );
-$mp_user  = pc_github_username();
+$pp_repos = pc_github_get_repositories();
+$pp_error = is_wp_error( $pp_repos ) ? $pp_repos : null;
+$pp_items = $pp_error ? array() : array_slice( (array) $pp_repos, 0, 6 );
+$pp_langs = $pp_error ? array() : pc_github_language_stats( (array) $pp_repos );
+$pp_user  = pc_github_username();
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'github',
 		'eyebrow' => 'github activity',
@@ -35,7 +35,7 @@ mp_section_open(
 );
 ?>
 
-<?php if ( $mp_error ) : ?>
+<?php if ( $pp_error ) : ?>
 	<p class="notice-inline">
 		<?php esc_html_e( 'GitHub の情報を取得できませんでした。時間をおいて再度お試しください。', 'pacchi-portfolio' ); ?>
 	</p>
@@ -43,24 +43,24 @@ mp_section_open(
 	<?php if ( current_user_can( 'manage_options' ) ) : ?>
 		<?php /* 管理者にだけ原因を見せる。一般の閲覧者に内部エラーを出さない。 */ ?>
 		<p class="notice-inline notice-inline--debug">
-			<?php echo esc_html( $mp_error->get_error_message() ); ?>
+			<?php echo esc_html( $pp_error->get_error_message() ); ?>
 		</p>
 	<?php endif; ?>
 
-<?php elseif ( empty( $mp_items ) ) : ?>
+<?php elseif ( empty( $pp_items ) ) : ?>
 	<p class="notice-inline"><?php esc_html_e( '公開リポジトリはまだありません。', 'pacchi-portfolio' ); ?></p>
 
 <?php else : ?>
 
-	<?php if ( ! empty( $mp_langs ) ) : ?>
+	<?php if ( ! empty( $pp_langs ) ) : ?>
 		<div class="gh-langs">
 			<span class="gh-langs__label"><?php esc_html_e( '使用言語', 'pacchi-portfolio' ); ?></span>
 			<ul class="tag-list">
-				<?php foreach ( array_slice( $mp_langs, 0, 8, true ) as $mp_lang => $mp_count ) : ?>
+				<?php foreach ( array_slice( $pp_langs, 0, 8, true ) as $pp_lang => $pp_count ) : ?>
 					<li>
 						<span class="tag tag--muted">
-							<?php echo esc_html( $mp_lang ); ?>
-							<span class="gh-langs__count"><?php echo esc_html( (string) $mp_count ); ?></span>
+							<?php echo esc_html( $pp_lang ); ?>
+							<span class="gh-langs__count"><?php echo esc_html( (string) $pp_count ); ?></span>
 						</span>
 					</li>
 				<?php endforeach; ?>
@@ -69,32 +69,32 @@ mp_section_open(
 	<?php endif; ?>
 
 	<ul class="gh-list">
-		<?php foreach ( $mp_items as $mp_repo ) : ?>
+		<?php foreach ( $pp_items as $pp_repo ) : ?>
 			<li>
-				<a class="gh-card" href="<?php echo esc_url( (string) $mp_repo['url'] ); ?>" target="_blank" rel="noreferrer noopener">
+				<a class="gh-card" href="<?php echo esc_url( (string) $pp_repo['url'] ); ?>" target="_blank" rel="noreferrer noopener">
 					<span class="gh-card__head">
-						<span class="gh-card__name"><?php echo esc_html( (string) $mp_repo['name'] ); ?></span>
-						<?php if ( (int) $mp_repo['stars'] > 0 ) : ?>
-							<span class="gh-card__stars">★ <?php echo esc_html( (string) (int) $mp_repo['stars'] ); ?></span>
+						<span class="gh-card__name"><?php echo esc_html( (string) $pp_repo['name'] ); ?></span>
+						<?php if ( (int) $pp_repo['stars'] > 0 ) : ?>
+							<span class="gh-card__stars">★ <?php echo esc_html( (string) (int) $pp_repo['stars'] ); ?></span>
 						<?php endif; ?>
 					</span>
 
-					<?php if ( '' !== (string) $mp_repo['description'] ) : ?>
-						<span class="gh-card__desc text-balance-ja"><?php echo esc_html( (string) $mp_repo['description'] ); ?></span>
+					<?php if ( '' !== (string) $pp_repo['description'] ) : ?>
+						<span class="gh-card__desc text-balance-ja"><?php echo esc_html( (string) $pp_repo['description'] ); ?></span>
 					<?php endif; ?>
 
 					<span class="gh-card__meta">
-						<?php if ( '' !== (string) $mp_repo['language'] ) : ?>
-							<span class="gh-card__lang"><?php echo esc_html( (string) $mp_repo['language'] ); ?></span>
+						<?php if ( '' !== (string) $pp_repo['language'] ) : ?>
+							<span class="gh-card__lang"><?php echo esc_html( (string) $pp_repo['language'] ); ?></span>
 						<?php endif; ?>
-						<?php if ( '' !== (string) $mp_repo['updated_at'] ) : ?>
+						<?php if ( '' !== (string) $pp_repo['updated_at'] ) : ?>
 							<span class="gh-card__date">
 								<?php
 								// API の日時は UTC の ISO8601。サイトのタイムゾーンへ変換して表示する。
 								echo esc_html(
 									wp_date(
 										(string) get_option( 'date_format' ),
-										(int) strtotime( (string) $mp_repo['updated_at'] )
+										(int) strtotime( (string) $pp_repo['updated_at'] )
 									)
 								);
 								?>
@@ -106,9 +106,9 @@ mp_section_open(
 		<?php endforeach; ?>
 	</ul>
 
-	<?php if ( '' !== $mp_user ) : ?>
+	<?php if ( '' !== $pp_user ) : ?>
 		<p class="gh-more">
-			<a class="button button--secondary" href="<?php echo esc_url( 'https://github.com/' . $mp_user ); ?>" target="_blank" rel="noreferrer noopener">
+			<a class="button button--secondary" href="<?php echo esc_url( 'https://github.com/' . $pp_user ); ?>" target="_blank" rel="noreferrer noopener">
 				<?php esc_html_e( 'View on GitHub', 'pacchi-portfolio' ); ?>
 			</a>
 		</p>
@@ -117,4 +117,4 @@ mp_section_open(
 <?php endif; ?>
 
 <?php
-mp_section_close();
+pp_section_close();

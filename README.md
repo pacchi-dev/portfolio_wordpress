@@ -572,7 +572,7 @@ Largest Contentful Paint 2.7s → 1.6s
 ### `filemtime` をアセットのバージョンに使う
 
 ```php
-wp_enqueue_style( 'mp-main', $url, array(), mp_asset_version( '/assets/css/main.css' ) );
+wp_enqueue_style( 'mp-main', $url, array(), pp_asset_version( '/assets/css/main.css' ) );
 ```
 
 固定のバージョン番号だと「更新したのに反映されない」という

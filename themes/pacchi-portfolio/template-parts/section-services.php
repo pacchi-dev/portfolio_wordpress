@@ -10,30 +10,30 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_page_id = (int) get_option( 'page_on_front' );
+$pp_page_id = (int) get_option( 'page_on_front' );
 
-$mp_cards = array();
+$pp_cards = array();
 
 for ( $i = 1; $i <= 4; $i++ ) {
-	$card = (array) get_field( "service_{$i}", $mp_page_id );
+	$card = (array) get_field( "service_{$i}", $pp_page_id );
 
 	if ( '' === trim( (string) ( $card['title'] ?? '' ) ) ) {
 		continue;
 	}
 
-	$mp_cards[] = $card;
+	$pp_cards[] = $card;
 }
 
-if ( empty( $mp_cards ) ) {
+if ( empty( $pp_cards ) ) {
 	return;
 }
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'services',
 		'eyebrow' => 'what i do',
-		'title'   => (string) get_field( 'services_title', $mp_page_id ),
-		'lead'    => (string) get_field( 'services_lead', $mp_page_id ),
+		'title'   => (string) get_field( 'services_title', $pp_page_id ),
+		'lead'    => (string) get_field( 'services_lead', $pp_page_id ),
 		'surface' => true,
 		/*
 		 * 発注可否を判断するセクションなので、初期状態で開いておく。
@@ -46,23 +46,23 @@ mp_section_open(
 ?>
 
 <div class="card-grid">
-	<?php foreach ( $mp_cards as $mp_card ) : ?>
+	<?php foreach ( $pp_cards as $pp_card ) : ?>
 		<article class="service-card">
 			<div class="service-card__head">
 				<span class="service-card__icon" aria-hidden="true">
-					<?php mp_service_icon( (string) ( $mp_card['icon'] ?? 'backend' ) ); ?>
+					<?php pp_service_icon( (string) ( $pp_card['icon'] ?? 'backend' ) ); ?>
 				</span>
-				<h3 class="service-card__title"><?php echo esc_html( (string) $mp_card['title'] ); ?></h3>
+				<h3 class="service-card__title"><?php echo esc_html( (string) $pp_card['title'] ); ?></h3>
 			</div>
 
-			<?php if ( '' !== trim( (string) ( $mp_card['description'] ?? '' ) ) ) : ?>
-				<p class="service-card__text text-balance-ja"><?php echo esc_html( (string) $mp_card['description'] ); ?></p>
+			<?php if ( '' !== trim( (string) ( $pp_card['description'] ?? '' ) ) ) : ?>
+				<p class="service-card__text text-balance-ja"><?php echo esc_html( (string) $pp_card['description'] ); ?></p>
 			<?php endif; ?>
 
-			<?php mp_render_tags( mp_lines_to_array( (string) ( $mp_card['tags'] ?? '' ) ) ); ?>
+			<?php pp_render_tags( pp_lines_to_array( (string) ( $pp_card['tags'] ?? '' ) ) ); ?>
 		</article>
 	<?php endforeach; ?>
 </div>
 
 <?php
-mp_section_close();
+pp_section_close();

@@ -21,13 +21,13 @@ defined( 'ABSPATH' ) || exit;
  *
  * 優先度 5 を指定して、canonical（既定 10）より前に出す。
  */
-add_action( 'wp_head', 'mp_output_meta_tags', 5 );
-function mp_output_meta_tags(): void {
+add_action( 'wp_head', 'pp_output_meta_tags', 5 );
+function pp_output_meta_tags(): void {
 
-	$description = mp_meta_description();
-	$title       = mp_meta_title();
-	$url         = mp_current_url();
-	$image       = mp_og_image_url();
+	$description = pp_meta_description();
+	$title       = pp_meta_title();
+	$url         = pp_current_url();
+	$image       = pp_og_image_url();
 	$type        = ( is_singular() && ! is_front_page() ) ? 'article' : 'website';
 
 	if ( '' !== $description ) {
@@ -70,7 +70,7 @@ function mp_output_meta_tags(): void {
  *
  * @return string
  */
-function mp_meta_description(): string {
+function pp_meta_description(): string {
 	if ( is_front_page() ) {
 		$page_id = (int) get_option( 'page_on_front' );
 		$lead    = $page_id > 0 && function_exists( 'get_field' )
@@ -78,23 +78,23 @@ function mp_meta_description(): string {
 			: '';
 
 		if ( '' !== $lead ) {
-			return mp_trim_text( $lead, 120 );
+			return pp_trim_text( $lead, 120 );
 		}
 
-		return mp_trim_text( (string) get_bloginfo( 'description' ), 120 );
+		return pp_trim_text( (string) get_bloginfo( 'description' ), 120 );
 	}
 
 	if ( is_singular() ) {
 		$summary = (string) get_field( 'summary', get_the_ID() );
 
 		if ( '' !== $summary ) {
-			return mp_trim_text( $summary, 120 );
+			return pp_trim_text( $summary, 120 );
 		}
 
 		$excerpt = (string) get_the_excerpt();
 
 		if ( '' !== $excerpt ) {
-			return mp_trim_text( $excerpt, 120 );
+			return pp_trim_text( $excerpt, 120 );
 		}
 	}
 
@@ -114,7 +114,7 @@ function mp_meta_description(): string {
 		return __( '実運用を想定して設計・実装した制作物の一覧。', 'pacchi-portfolio' );
 	}
 
-	return mp_trim_text( (string) get_bloginfo( 'description' ), 120 );
+	return pp_trim_text( (string) get_bloginfo( 'description' ), 120 );
 }
 
 /**
@@ -122,7 +122,7 @@ function mp_meta_description(): string {
  *
  * @return string
  */
-function mp_meta_title(): string {
+function pp_meta_title(): string {
 	if ( is_front_page() ) {
 		return wp_specialchars_decode( (string) get_bloginfo( 'name' ), ENT_QUOTES );
 	}
@@ -139,7 +139,7 @@ function mp_meta_title(): string {
  *
  * @return string
  */
-function mp_current_url(): string {
+function pp_current_url(): string {
 	if ( is_front_page() ) {
 		return home_url( '/' );
 	}
@@ -174,7 +174,7 @@ function mp_current_url(): string {
  *
  * @return string
  */
-function mp_og_image_url(): string {
+function pp_og_image_url(): string {
 	if ( is_singular() && has_post_thumbnail() ) {
 		$url = get_the_post_thumbnail_url( get_the_ID(), 'full' );
 
@@ -183,10 +183,10 @@ function mp_og_image_url(): string {
 		}
 	}
 
-	$default = MP_THEME_DIR . '/assets/img/og-default.png';
+	$default = PP_THEME_DIR . '/assets/img/og-default.png';
 
 	if ( file_exists( $default ) ) {
-		return MP_THEME_URI . '/assets/img/og-default.png';
+		return PP_THEME_URI . '/assets/img/og-default.png';
 	}
 
 	return '';
@@ -202,7 +202,7 @@ function mp_og_image_url(): string {
  * @param int    $length 最大文字数。
  * @return string
  */
-function mp_trim_text( string $text, int $length ): string {
+function pp_trim_text( string $text, int $length ): string {
 	$text = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $text ) ) ?? '' );
 
 	if ( mb_strlen( $text ) <= $length ) {
@@ -218,8 +218,8 @@ function mp_trim_text( string $text, int $length ): string {
  * 日付アーカイブや投稿（post）のアーカイブは使っておらず、
  * 空のページがインデックスされると評価を下げるため塞ぐ。
  */
-add_action( 'template_redirect', 'mp_disable_unused_archives' );
-function mp_disable_unused_archives(): void {
+add_action( 'template_redirect', 'pp_disable_unused_archives' );
+function pp_disable_unused_archives(): void {
 	if ( is_date() || is_search() ) {
 		global $wp_query;
 		$wp_query->set_404();

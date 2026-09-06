@@ -12,19 +12,19 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_page_id = (int) get_option( 'page_on_front' );
+$pp_page_id = (int) get_option( 'page_on_front' );
 
-if ( $mp_page_id <= 0 ) {
+if ( $pp_page_id <= 0 ) {
 	return;
 }
 
-$role_1 = (string) get_field( 'hero_role_1', $mp_page_id );
-$role_2 = (string) get_field( 'hero_role_2', $mp_page_id );
-$name   = (string) get_field( 'hero_name', $mp_page_id );
-$lead   = (string) get_field( 'hero_lead', $mp_page_id );
-$stack  = mp_lines_to_array( (string) get_field( 'hero_stack', $mp_page_id ) );
+$role_1 = (string) get_field( 'hero_role_1', $pp_page_id );
+$role_2 = (string) get_field( 'hero_role_2', $pp_page_id );
+$name   = (string) get_field( 'hero_name', $pp_page_id );
+$lead   = (string) get_field( 'hero_lead', $pp_page_id );
+$stack  = pp_lines_to_array( (string) get_field( 'hero_stack', $pp_page_id ) );
 
-$highlights_raw = (array) get_field( 'hero_highlights', $mp_page_id );
+$highlights_raw = (array) get_field( 'hero_highlights', $pp_page_id );
 $highlights     = array();
 
 foreach ( array( 'item_1', 'item_2', 'item_3' ) as $key ) {
@@ -35,8 +35,8 @@ foreach ( array( 'item_1', 'item_2', 'item_3' ) as $key ) {
 	}
 }
 
-$github_url = (string) get_field( 'contact_github', $mp_page_id );
-$avatar_id  = (int) get_field( 'hero_avatar', $mp_page_id );
+$github_url = (string) get_field( 'contact_github', $pp_page_id );
+$avatar_id  = (int) get_field( 'hero_avatar', $pp_page_id );
 ?>
 
 <section id="top" class="hero">
@@ -44,10 +44,10 @@ $avatar_id  = (int) get_field( 'hero_avatar', $mp_page_id );
 
 	<div class="hero__inner">
 		<div class="hero__main">
-			<?php if ( mp_is_accepting_work() ) : ?>
+			<?php if ( pp_is_accepting_work() ) : ?>
 				<p class="status-pill">
 					<span class="status-pill__dot status-dot" aria-hidden="true"></span>
-					<?php echo esc_html( mp_availability_label() ); ?>
+					<?php echo esc_html( pp_availability_label() ); ?>
 				</p>
 			<?php endif; ?>
 

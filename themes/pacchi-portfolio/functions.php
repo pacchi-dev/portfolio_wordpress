@@ -15,13 +15,13 @@
 // 直接アクセスされた場合に処理を止める。WordPress のテーマ・プラグインでは定石。
 defined( 'ABSPATH' ) || exit;
 
-define( 'MP_THEME_VERSION', '1.0.0' );
-define( 'MP_THEME_DIR', get_template_directory() );
-define( 'MP_THEME_URI', get_template_directory_uri() );
+define( 'PP_THEME_VERSION', '1.0.0' );
+define( 'PP_THEME_DIR', get_template_directory() );
+define( 'PP_THEME_URI', get_template_directory_uri() );
 
-require_once MP_THEME_DIR . '/inc/setup.php';
-require_once MP_THEME_DIR . '/inc/enqueue.php';
-require_once MP_THEME_DIR . '/inc/template-tags.php';
-require_once MP_THEME_DIR . '/inc/customizer.php';
-require_once MP_THEME_DIR . '/inc/seo.php';
-require_once MP_THEME_DIR . '/inc/security.php';
+require_once PP_THEME_DIR . '/inc/setup.php';
+require_once PP_THEME_DIR . '/inc/enqueue.php';
+require_once PP_THEME_DIR . '/inc/template-tags.php';
+require_once PP_THEME_DIR . '/inc/customizer.php';
+require_once PP_THEME_DIR . '/inc/seo.php';
+require_once PP_THEME_DIR . '/inc/security.php';

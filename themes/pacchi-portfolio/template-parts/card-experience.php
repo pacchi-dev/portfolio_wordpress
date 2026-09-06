@@ -24,8 +24,8 @@ $team_size  = (string) get_field( 'team_size', $post_id );
 $summary    = (string) get_field( 'summary', $post_id );
 $note       = (string) get_field( 'note', $post_id );
 
-$responsibilities = mp_lines_to_array( (string) get_field( 'responsibilities', $post_id ) );
-$showcase         = mp_lines_to_array( (string) get_field( 'showcase', $post_id ) );
+$responsibilities = pp_lines_to_array( (string) get_field( 'responsibilities', $post_id ) );
+$showcase         = pp_lines_to_array( (string) get_field( 'showcase', $post_id ) );
 
 // 使用技術はタクソノミーから取得する。
 $technologies = get_the_terms( $post_id, 'technology' );
@@ -47,7 +47,7 @@ $tech_names   = ( is_array( $technologies ) ) ? wp_list_pluck( $technologies, 'n
 					<span class="badge badge--current"><?php esc_html_e( 'Current', 'pacchi-portfolio' ); ?></span>
 				<?php endif; ?>
 			</span>
-			<?php mp_icon_chevron( 'exp-card__chevron' ); ?>
+			<?php pp_icon_chevron( 'exp-card__chevron' ); ?>
 		</span>
 
 		<span class="exp-card__title text-balance-ja"><?php the_title(); ?></span>
@@ -85,13 +85,13 @@ $tech_names   = ( is_array( $technologies ) ) ? wp_list_pluck( $technologies, 'n
 
 		<?php
 		if ( ! empty( $showcase ) ) {
-			mp_render_tags( $showcase, 'accent' );
+			pp_render_tags( $showcase, 'accent' );
 		}
 		?>
 
 		<?php if ( ! empty( $tech_names ) ) : ?>
 			<div class="exp-card__tech">
-				<?php mp_render_tags( $tech_names, 'muted' ); ?>
+				<?php pp_render_tags( $tech_names, 'muted' ); ?>
 			</div>
 		<?php endif; ?>
 

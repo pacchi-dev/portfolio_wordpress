@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$mp_experience_query = new WP_Query(
+$pp_experience_query = new WP_Query(
 	array(
 		'post_type'              => 'experience',
 		'post_status'            => 'publish',
@@ -26,11 +26,11 @@ $mp_experience_query = new WP_Query(
 	)
 );
 
-if ( ! $mp_experience_query->have_posts() ) {
+if ( ! $pp_experience_query->have_posts() ) {
 	return;
 }
 
-mp_section_open(
+pp_section_open(
 	array(
 		'id'      => 'experience',
 		'eyebrow' => 'experience',
@@ -44,20 +44,20 @@ mp_section_open(
 
 <div class="exp-list">
 	<?php
-	while ( $mp_experience_query->have_posts() ) :
-		$mp_experience_query->the_post();
+	while ( $pp_experience_query->have_posts() ) :
+		$pp_experience_query->the_post();
 		// 第 3 引数で子テンプレートへ値を渡せる（WordPress 5.5 以降）。
 		get_template_part(
 			'template-parts/card-experience',
 			null,
-			array( 'is_first' => 0 === $mp_experience_query->current_post )
+			array( 'is_first' => 0 === $pp_experience_query->current_post )
 		);
 	endwhile;
 	?>
 </div>
 
 <?php
-mp_section_close();
+pp_section_close();
 
 // サブループの後始末。
 wp_reset_postdata();

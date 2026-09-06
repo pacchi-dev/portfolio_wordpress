@@ -142,7 +142,7 @@ Client -> Load Balancer -> *Go API (Echo)* -> PostgreSQL, Redis
 ```
 
 - `->` で列（処理の流れ）を区切り、`,` で同じ列に並べ、`*` で囲むと強調
-- 実装は `mp_render_architecture()` / `mp_parse_architecture()`（テーマの `inc/template-tags.php`）
+- 実装は `pp_render_architecture()` / `pp_parse_architecture()`（テーマの `inc/template-tags.php`）
 
 **なぜ画像ファイルではなく SVG か**
 

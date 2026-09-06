@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  * トークンの配列。[ クラス名, 文字列 ] の並びで 1 行を表す。
  * クラス名が空文字なら通常色。
  */
-$mp_lines = array(
+$pp_lines = array(
 	array( array( 'com', '// booking/service.go' ) ),
 	array(
 		array( 'kw', 'func ' ),
@@ -80,21 +80,21 @@ $mp_lines = array(
 		<span class="terminal-card__name">booking_service.go</span>
 	</div>
 	<pre class="code-card"><?php
-	foreach ( $mp_lines as $mp_line ) {
+	foreach ( $pp_lines as $pp_line ) {
 		echo '<span class="code-card__line">';
 
-		if ( empty( $mp_line ) ) {
+		if ( empty( $pp_line ) ) {
 			echo ' ';
 		} else {
-			foreach ( $mp_line as $mp_token ) {
-				list( $mp_class, $mp_text ) = $mp_token;
+			foreach ( $pp_line as $pp_token ) {
+				list( $pp_class, $pp_text ) = $pp_token;
 
-				if ( '' === $mp_class ) {
-					echo esc_html( $mp_text );
+				if ( '' === $pp_class ) {
+					echo esc_html( $pp_text );
 					continue;
 				}
 
-				printf( '<span class="tok-%1$s">%2$s</span>', esc_attr( $mp_class ), esc_html( $mp_text ) );
+				printf( '<span class="tok-%1$s">%2$s</span>', esc_attr( $pp_class ), esc_html( $pp_text ) );
 			}
 		}
 
