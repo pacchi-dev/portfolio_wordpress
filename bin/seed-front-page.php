@@ -110,7 +110,7 @@ update_field( 'about_body', implode( "\n\n", (array) ( $profile['about'] ?? arra
 WP_CLI::log( '==> What I Do を投入します' );
 
 update_field( 'services_title', '対応できる領域', $page_id );
-update_field( 'services_lead', '実装だけでなく、要件整理・設計・運用までを含めて対応します。', $page_id );
+update_field( 'services_lead', '実装だけでなく、要件の整理から公開後の保守運用まで一貫して対応します。お気軽にご相談ください。', $page_id );
 
 // 移植元の id とアイコンの対応。
 $icon_map = array(

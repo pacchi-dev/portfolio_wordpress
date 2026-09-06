@@ -263,7 +263,26 @@ svg {
 .site-nav__list {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  /* 日本語を併記したぶんラベルが広がるため、間隔を詰めて収める。 */
+  gap: 1rem;
+}
+
+/* 英語を主・日本語を副として 2 段で出す。 */
+.nav-label {
+  display: block;
+  line-height: 1.3;
+}
+
+.nav-label__ja {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: 1.3;
+  color: var(--color-subtle);
+}
+
+.site-nav__list a:hover .nav-label__ja {
+  color: inherit;
 }
 
 .site-nav__list a {
@@ -271,11 +290,17 @@ svg {
    * テキストのみだと行ボックスの 17px しかクリック領域がない。
    * ヘッダーの高さ（4rem）に余裕があるので、見た目を変えずに
    * 44px の当たり判定を持たせる。
+   *
+   * 英語と日本語を 2 段で出すため column 方向にする。
+   * nowrap を付けないと、幅が詰まったときにラベルが縦積みに折り返す。
    */
   display: inline-flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   min-height: var(--tap-target);
   font-size: var(--text-base);
+  line-height: 1.3;
+  white-space: nowrap;
   color: var(--color-muted);
 }
 
@@ -340,10 +365,18 @@ svg {
 }
 
 .mobile-nav__list a {
-  display: block;
+  /* 縦に余白のあるモバイルでは、英語と日本語を横に並べたほうが読みやすい。 */
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
   padding-block: 0.75rem;
   font-size: var(--text-base);
   color: var(--color-muted);
+}
+
+.mobile-nav__list .nav-label,
+.mobile-nav__list .nav-label__ja {
+  display: inline;
 }
 
 /*
@@ -894,6 +927,50 @@ svg {
   .skill-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* Experienced / Familiar の折りたたみ。 */
+.skill-more {
+  margin-top: 2rem;
+}
+
+.skill-more__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tap-target);
+  padding: 0 0.875rem;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--color-muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.skill-more__summary::-webkit-details-marker {
+  display: none;
+}
+
+.skill-more__summary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.skill-more__chevron {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.skill-more[open] .skill-more__chevron {
+  transform: rotate(180deg);
+}
+
+.skill-more[open] .skill-grid {
+  margin-top: 2rem;
 }
 
 /* --------------------------------------------------------------------------

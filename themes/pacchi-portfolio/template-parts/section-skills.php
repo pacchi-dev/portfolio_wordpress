@@ -96,24 +96,49 @@ mp_section_open(
 	<li><span class="tag tag--muted">Familiar</span><span><?php esc_html_e( '業務で触れた経験がある', 'pacchi-portfolio' ); ?></span></li>
 </ul>
 
-<div class="skill-grid">
-	<?php foreach ( $mp_categories as $mp_key => $mp_label ) : ?>
-		<?php if ( empty( $mp_grouped[ $mp_key ] ) ) { continue; } ?>
-		<div class="skill-group">
-			<h3 class="skill-group__title"><?php echo esc_html( $mp_label ); ?></h3>
-			<ul class="tag-list">
-				<?php foreach ( $mp_grouped[ $mp_key ] as $mp_item ) : ?>
-					<li>
-						<a class="tag tag--<?php echo esc_attr( $mp_level_tone[ $mp_item['level'] ] ); ?>"
-						   href="<?php echo esc_url( get_term_link( $mp_item['slug'], 'technology' ) ); ?>">
-							<?php echo esc_html( $mp_item['name'] ); ?>
-						</a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		</div>
-	<?php endforeach; ?>
-</div>
-
 <?php
+/*
+ * 既定では Main のみを表示する。
+ *
+ * 全 40 件超を一度に出すと、非エンジニアの閲覧者には
+ * 「何ができる人か」が読み取れない情報量になる。
+ * Experienced / Familiar は details に畳み、必要な人だけが開く形にした。
+ *
+ * JavaScript を使わず details/summary で実装しているのは、
+ * 本テーマの他セクションと挙動を揃えるため。
+ */
+$mp_main  = array();
+$mp_rest  = array();
+$mp_rest_count = 0;
+
+foreach ( $mp_grouped as $mp_key => $mp_items ) {
+	$mp_main[ $mp_key ] = array_values(
+		array_filter( $mp_items, static fn( array $i ): bool => 'main' === $i['level'] )
+	);
+	$mp_rest[ $mp_key ] = array_values(
+		array_filter( $mp_items, static fn( array $i ): bool => 'main' !== $i['level'] )
+	);
+	$mp_rest_count += count( $mp_rest[ $mp_key ] );
+}
+
+mp_render_skill_grid( $mp_categories, $mp_main, $mp_level_tone );
+
+if ( $mp_rest_count > 0 ) :
+	?>
+	<details class="skill-more">
+		<summary class="skill-more__summary">
+			<span><?php
+				printf(
+					/* translators: %d: 折りたたまれている技術の件数 */
+					esc_html__( 'Experienced / Familiar もすべて表示（%d 件）', 'pacchi-portfolio' ),
+					(int) $mp_rest_count
+				);
+			?></span>
+			<?php mp_icon_chevron( 'skill-more__chevron' ); ?>
+		</summary>
+		<?php mp_render_skill_grid( $mp_categories, $mp_rest, $mp_level_tone ); ?>
+	</details>
+	<?php
+endif;
+
 mp_section_close();

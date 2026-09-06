@@ -217,17 +217,26 @@ function mp_primary_menu( string $list_class ): void {
 	 */
 	$items = array();
 
+	/*
+	 * 英語ラベルの下に日本語を小さく併記する。
+	 *
+	 * 発注者に非エンジニアが多いことを踏まえた対応。
+	 * 日本語だけに置き換えるとラベルが横に伸びてヘッダーに収まらないため、
+	 * 英語を主・日本語を副として 2 段で出す（日本の企業サイトで一般的な形）。
+	 * 日本語ラベルは各セクションの見出しと揃えている。
+	 */
 	$anchors_before = array(
-		'about'      => __( 'About', 'pacchi-portfolio' ),
-		'services'   => __( 'What I Do', 'pacchi-portfolio' ),
-		'skills'     => __( 'Skills', 'pacchi-portfolio' ),
-		'experience' => __( 'Experience', 'pacchi-portfolio' ),
+		'about'      => array( __( 'About', 'pacchi-portfolio' ), __( '私について', 'pacchi-portfolio' ) ),
+		'services'   => array( __( 'What I Do', 'pacchi-portfolio' ), __( '対応領域', 'pacchi-portfolio' ) ),
+		'skills'     => array( __( 'Skills', 'pacchi-portfolio' ), __( '使用技術', 'pacchi-portfolio' ) ),
+		'experience' => array( __( 'Experience', 'pacchi-portfolio' ), __( '実務経験', 'pacchi-portfolio' ) ),
 	);
 
-	foreach ( $anchors_before as $anchor => $label ) {
+	foreach ( $anchors_before as $anchor => $labels ) {
 		$items[] = array(
 			'url'   => home_url( '/#' . $anchor ),
-			'label' => $label,
+			'label' => $labels[0],
+			'sub'   => $labels[1],
 		);
 	}
 
@@ -244,20 +253,22 @@ function mp_primary_menu( string $list_class ): void {
 		$items[] = array(
 			'url'   => $works_url,
 			'label' => __( 'Works', 'pacchi-portfolio' ),
+			'sub'   => __( '制作実績', 'pacchi-portfolio' ),
 		);
 	}
 
 	$anchors_after = array(
-		'github'  => __( 'GitHub', 'pacchi-portfolio' ),
-		'ai'      => __( 'AI Development', 'pacchi-portfolio' ),
-		'work'    => __( 'Work With Me', 'pacchi-portfolio' ),
-		'contact' => __( 'Contact', 'pacchi-portfolio' ),
+		'github'  => array( __( 'GitHub', 'pacchi-portfolio' ), __( 'リポジトリ', 'pacchi-portfolio' ) ),
+		'ai'      => array( __( 'AI Development', 'pacchi-portfolio' ), __( '生成AI活用', 'pacchi-portfolio' ) ),
+		'work'    => array( __( 'Work With Me', 'pacchi-portfolio' ), __( 'ご依頼について', 'pacchi-portfolio' ) ),
+		'contact' => array( __( 'Contact', 'pacchi-portfolio' ), __( 'お問い合わせ', 'pacchi-portfolio' ) ),
 	);
 
-	foreach ( $anchors_after as $anchor => $label ) {
+	foreach ( $anchors_after as $anchor => $labels ) {
 		$items[] = array(
 			'url'   => home_url( '/#' . $anchor ),
-			'label' => $label,
+			'label' => $labels[0],
+			'sub'   => $labels[1],
 		);
 	}
 
@@ -265,9 +276,10 @@ function mp_primary_menu( string $list_class ): void {
 
 	foreach ( $items as $item ) {
 		printf(
-			'<li><a href="%1$s">%2$s</a></li>',
+			'<li><a href="%1$s"><span class="nav-label">%2$s</span><span class="nav-label__ja">%3$s</span></a></li>',
 			esc_url( $item['url'] ),
-			esc_html( $item['label'] )
+			esc_html( $item['label'] ),
+			esc_html( (string) ( $item['sub'] ?? '' ) )
 		);
 	}
 
@@ -504,4 +516,58 @@ function mp_output_architecture_svg( array $columns ): void {
 	}
 
 	echo '</svg></div>';
+}
+
+/**
+ * 技術スタックのグリッドを出力する。
+ *
+ * Main のみのグリッドと、折りたたみ内の残りのグリッドで
+ * 同じマークアップを使うため関数に切り出している。
+ *
+ * @param array<string, string>                                                        $categories カテゴリのキーと表示名。
+ * @param array<string, array<int, array{name: string, slug: string, level: string}>>   $grouped    カテゴリごとの技術。
+ * @param array<string, string>                                                        $level_tone レベルとタグの見た目の対応。
+ */
+function mp_render_skill_grid( array $categories, array $grouped, array $level_tone ): void {
+	$has_any = false;
+
+	foreach ( $categories as $key => $label ) {
+		if ( ! empty( $grouped[ $key ] ) ) {
+			$has_any = true;
+			break;
+		}
+	}
+
+	if ( ! $has_any ) {
+		return;
+	}
+
+	echo '<div class="skill-grid">';
+
+	foreach ( $categories as $key => $label ) {
+		if ( empty( $grouped[ $key ] ) ) {
+			continue;
+		}
+
+		printf(
+			'<div class="skill-group"><h3 class="skill-group__title">%s</h3><ul class="tag-list">',
+			esc_html( $label )
+		);
+
+		foreach ( $grouped[ $key ] as $item ) {
+			$tone = $level_tone[ $item['level'] ] ?? 'default';
+			$link = get_term_link( $item['slug'], 'technology' );
+
+			printf(
+				'<li><a class="tag tag--%1$s" href="%2$s">%3$s</a></li>',
+				esc_attr( $tone ),
+				esc_url( is_wp_error( $link ) ? '' : (string) $link ),
+				esc_html( $item['name'] )
+			);
+		}
+
+		echo '</ul></div>';
+	}
+
+	echo '</div>';
 }

@@ -33,63 +33,56 @@
   "services": [
     {
       "id": "backend",
-      "title": "Backend Development",
-      "description": "Web APIの設計・実装から既存システムの機能追加、DB設計、キャッシュ戦略、テスト、保守運用まで対応します。DDD・オニオンアーキテクチャに基づく、変更に強い実装を得意としています。",
+      "title": "Web システムの開発",
+      "description": "サイトの裏側で動く仕組みを作ります。お問い合わせや会員機能、外部サービスとの連携、データベースの設計など。仕様が固まっていない段階からのご相談にも対応します。",
       "tags": [
         "Go",
         "PHP / Laravel",
         "REST API",
-        "OpenAPI",
-        "Database Design",
-        "SQL",
-        "Redis / Cache",
-        "Testing",
-        "Code Review"
+        "DB 設計",
+        "キャッシュ設計",
+        "テスト",
+        "コードレビュー"
       ]
     },
     {
       "id": "cloud",
-      "title": "AWS / Infrastructure",
-      "description": "AWSを利用したWebサービスのインフラ設計・構築、クラウド環境でのアプリケーション開発・運用を経験しています。ネットワーク分離や冗長構成など、継続性を意識した構成を設計します。",
+      "title": "サーバー・インフラ構築",
+      "description": "サービスを安定して動かすためのサーバー環境を設計・構築します。アクセスが増えても落ちない構成や、障害が起きても止まりにくい構成をご相談いただけます。",
       "tags": [
-        "VPC",
-        "ALB",
+        "AWS",
         "ECS",
         "RDS / Aurora",
         "S3",
-        "EFS",
-        "Route53",
-        "Athena",
-        "Redshift",
-        "Datadog"
+        "ネットワーク設計",
+        "冗長構成",
+        "監視"
       ]
     },
     {
       "id": "design",
-      "title": "System Design / Operation",
-      "description": "実装だけではなく、要件整理、API・DB設計、監視、障害調査、性能改善、保守運用までシステム全体を意識して対応します。仕様が固まっていない段階からの整理も可能です。",
+      "title": "改善・保守運用",
+      "description": "作って終わりにしません。表示速度の改善、不具合の原因調査、監視の設定、公開後の修正対応まで引き受けます。「何が原因か分からない」という状態からの調査も可能です。",
       "tags": [
-        "Requirements",
-        "API Design",
-        "DB Design",
-        "Monitoring",
-        "Troubleshooting",
-        "Performance",
-        "Maintenance"
+        "表示速度の改善",
+        "不具合調査",
+        "監視設定",
+        "要件整理",
+        "API 設計",
+        "保守運用"
       ]
     },
     {
       "id": "ai",
-      "title": "AI-Assisted Development",
-      "description": "生成AIをコード生成だけでなく、開発ルール・レビュー・チーム開発プロセスへ組み込む取り組みを行っています。導入から運用ルールの整備までを支援できます。",
+      "title": "生成AIの開発への導入",
+      "description": "Claude Code などの生成AIを、コードを書かせるだけでなく開発ルールやレビューの仕組みに組み込んでいます。チームへの導入から運用ルールの整備まで支援できます。",
       "tags": [
         "Claude Code",
         "GitHub Copilot",
         "CLAUDE.md",
-        "Rules",
-        "Skills / Commands",
-        "GitHub Actions",
-        "AI Code Review"
+        "開発ルール整備",
+        "AI コードレビュー",
+        "GitHub Actions"
       ]
     }
   ],
