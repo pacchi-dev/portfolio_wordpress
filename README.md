@@ -187,6 +187,8 @@ SQL の `REPLACE` や `sed` で URL を置換すると長さが合わなくな�
 移設先に WP-CLI が無い前提のため、置換はローカルで済ませてから
 ダンプを持っていく方式にしています。
 
+公開までの具体的な手順は **[docs/deploy.md](docs/deploy.md)** にまとめています。
+
 ### Git 管理の方針
 
 WordPress 本体・`uploads`・データベース・`.env` は **Git 管理していません**。
