@@ -657,7 +657,7 @@ CPT 登録後にリライトルールが再生成されていませんでした�
 - **多言語対応** — 英語版の追加。翻訳ファイル（`.pot` / `.mo`）は生成済みの構造にしてある
 - **管理画面からのキャッシュ操作 UI** — 現在は REST エンドポイントのみ。管理バーへのボタン追加
 - **制作実績の絞り込み** — 技術タグによるフィルタ UI
-- **AWS Lightsail へのデプロイ** — `wp search-replace` を用いた URL 移行を含むサーバー構築
+- **共用レンタルサーバーへのデプロイ** — `wp search-replace` を用いた URL 移行を含む移設
 - **PHPUnit / WP-CLI によるテスト** — 特に GitHub API クライアントのモックテスト
 - **WordPress Coding Standards の CI** — PHPCS を GitHub Actions で自動実行
 

@@ -255,9 +255,15 @@ ACF のフィールド定義は Local JSON 機能でテーマ内に自動保存�
 | 6 | GitHub API 連携 | **wp_remote_get / Transients / WP_Error / REST API** |
 | 7 | お問い合わせフォーム自作 | **nonce / sanitization** / wp_mail / スパム対策 |
 | 8 | 仕上げ: OGP・パフォーマンス（Query Monitor で計測）・セキュリティ・README 完成 | 案件視点の総仕上げ |
-| 9（任意） | AWS Lightsail へデプロイ | サーバー移行 / AWS |
+| 9（受注後） | 共用レンタルサーバー（ロリポップ）へデプロイ | サーバー移行 / WP-CLI での URL 移行 |
 
 各 Phase 完了時に動作確認 → コミット。
+
+**Phase 9 の方針は `docs/decisions.md` の D-9 で確定済み。**
+当初は AWS Lightsail を想定していたが、CrowdWorks の WordPress 案件 143 件を調べたところ
+AWS の名前が出る案件は 0 件で、実案件で使われているのは国内の共用レンタルサーバーだった。
+また公開そのものを受注後まで行わないと決めたため、Phase 9 は当面着手しない。
+実装前に D-9 を読むこと。
 
 ---
 
@@ -271,6 +277,6 @@ ACF のフィールド定義は Local JSON 機能でテーマ内に自動保存�
 | 不具合調査 | Query Monitor での計測・調査（Phase 8） |
 | プラグイン関連 | 自作プラグイン開発（Phase 3–7） |
 | 外部 API 連携 | Phase 6 |
-| サーバー移行 / AWS | Phase 9 + WP-CLI でのデータ移行経験（Phase 4） |
+| サーバー移行 | Phase 9（共用サーバーへの移設）+ WP-CLI でのデータ移行経験（Phase 4）。調査した 150 件中 11 件（7%）がこの領域 |
 | パフォーマンス改善 | Phase 8（Transients・enqueue 最適化・計測） |
 | 会員機能 | **スコープ外**。README「今後追加したい機能」に記載する |
