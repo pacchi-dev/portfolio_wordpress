@@ -26,6 +26,7 @@ if ( is_wp_error( $mp_terms ) || empty( $mp_terms ) ) {
 // 表示用のカテゴリ定義。ACF の choices と対応させる。
 $mp_categories = array(
 	'backend'  => __( 'Backend', 'pacchi-portfolio' ),
+	'cms'      => __( 'CMS', 'pacchi-portfolio' ),
 	'database' => __( 'Database / Cache', 'pacchi-portfolio' ),
 	'cloud'    => __( 'Cloud / Infrastructure', 'pacchi-portfolio' ),
 	'devops'   => __( 'Development / Operation', 'pacchi-portfolio' ),

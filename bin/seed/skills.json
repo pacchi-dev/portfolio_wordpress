@@ -42,6 +42,24 @@
     ]
   },
   {
+    "id": "cms",
+    "title": "CMS",
+    "skills": [
+      {
+        "name": "WordPress",
+        "level": "main"
+      },
+      {
+        "name": "ACF",
+        "level": "main"
+      },
+      {
+        "name": "WP-CLI",
+        "level": "experienced"
+      }
+    ]
+  },
+  {
     "id": "database",
     "title": "Database / Cache",
     "skills": [

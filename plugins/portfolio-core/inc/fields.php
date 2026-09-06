@@ -285,6 +285,7 @@ function pc_register_technology_fields(): void {
 					'instructions'  => __( 'Skills セクションでの表示グループ。', 'portfolio-core' ),
 					'choices'       => array(
 						'backend'  => __( 'Backend', 'portfolio-core' ),
+						'cms'      => __( 'CMS', 'portfolio-core' ),
 						'database' => __( 'Database / Cache', 'portfolio-core' ),
 						'cloud'    => __( 'Cloud / Infrastructure', 'portfolio-core' ),
 						'devops'   => __( 'Development / Operation', 'portfolio-core' ),
