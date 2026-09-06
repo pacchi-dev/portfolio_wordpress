@@ -1,29 +1,30 @@
 [
   {
-    "slug": "go-booking-api",
-    "title": "Production-like Go Backend API",
-    "image": "go-booking-api.png",
-    "imageAlt": "Client から Load Balancer を経て Go API (Echo) へ、その先に PostgreSQL と Redis が接続される構成図",
-    "period": "2026.09 -",
-    "status": "development",
-    "githubUrl": "",
-    "summary": "実運用を想定した予約管理 API。認証・キャッシュ・テスト・CI までを含め、設計判断を README に明文化している。",
+    "slug": "soranowa-koumuten",
+    "title": "工務店コーポレートサイト（架空）",
+    "image": "koumuten-site.png",
+    "imageAlt": "架空の工務店コーポレートサイトのトップページ。住宅の外観写真をヒーローに使用",
+    "period": "2026.09",
+    "status": "",
+    "githubUrl": "https://github.com/pacchi-dev/koumuten-wp",
+    "summary": "注文住宅・リノベーションの工務店を想定したコーポレートサイト。実在する工務店サイト 50 件の構造を調査し、施工実績のフィールド設計や導線を実サイトに合わせている。架空の企業を想定した制作サンプル。",
     "responsibilities": [
-      "Echo と PostgreSQL による REST API の実装",
-      "JWT による認証・認可の実装",
-      "Redis を用いたキャッシュ戦略の設計",
-      "OpenAPI によるスキーマ定義とコード生成",
-      "GitHub Actions による CI（テスト・lint・ビルド）"
+      "オリジナルテーマと自作プラグインで全 9 ページを実装",
+      "施工実績をカスタム投稿タイプ化し、種別・エリアで絞り込めるよう実装",
+      "間取り図を管理画面の記法からインライン SVG として生成",
+      "Contact Form 7 による問い合わせ・採用応募フォーム",
+      "srcset と loading の出し分けによる画像最適化",
+      "構造化データ（GeneralContractor / BreadcrumbList）と OGP の出力"
     ],
-    "architecture": "Client -> Load Balancer -> *Go API (Echo)* -> PostgreSQL, Redis",
+    "architecture": "",
     "tech": [
+      "wordpress",
+      "php",
+      "acf",
+      "contact-form-7",
+      "mysql",
       "docker",
-      "echo",
-      "github-actions",
-      "go",
-      "openapi",
-      "postgresql",
-      "redis"
+      "wp-cli"
     ]
   },
   {
@@ -48,6 +49,33 @@
       "mysql",
       "php",
       "wordpress"
+    ]
+  },
+  {
+    "slug": "go-booking-api",
+    "title": "Production-like Go Backend API",
+    "image": "go-booking-api.png",
+    "imageAlt": "Client から Load Balancer を経て Go API (Echo) へ、その先に PostgreSQL と Redis が接続される構成図",
+    "period": "2026.09 -",
+    "status": "development",
+    "githubUrl": "",
+    "summary": "実運用を想定した予約管理 API。認証・キャッシュ・テスト・CI までを含め、設計判断を README に明文化している。",
+    "responsibilities": [
+      "Echo と PostgreSQL による REST API の実装",
+      "JWT による認証・認可の実装",
+      "Redis を用いたキャッシュ戦略の設計",
+      "OpenAPI によるスキーマ定義とコード生成",
+      "GitHub Actions による CI（テスト・lint・ビルド）"
+    ],
+    "architecture": "Client -> Load Balancer -> *Go API (Echo)* -> PostgreSQL, Redis",
+    "tech": [
+      "docker",
+      "echo",
+      "github-actions",
+      "go",
+      "openapi",
+      "postgresql",
+      "redis"
     ]
   }
 ]
