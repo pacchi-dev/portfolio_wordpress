@@ -27,3 +27,6 @@ debug.log
 *.swp
 .idea/
 .vscode/
+
+# 移設用の書き出し（DB ダンプと画像の実体を含むため管理しない）
+bin/dist/

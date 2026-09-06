@@ -167,6 +167,26 @@ docker exec portfolio_wp_cli wp --path=/var/www/html eval-file /scripts/seed-wor
 `uploads/` は Git 管理外のため、環境を作り直しても画像を再現できるよう
 元画像をリポジトリ側に置いています。
 
+### 共用レンタルサーバーへの移設
+
+```bash
+./bin/export.sh https://example.xfree.jp
+```
+
+`bin/dist/` に、移設先の URL へ置換済みの DB ダンプと `wp-content/` 一式、
+アップロード手順（`README.txt`）が出力されます。
+
+**URL の置換に `wp search-replace` を使っています。**
+WordPress は DB にシリアライズされた配列を保存しており
+（`s:21:"http://localhost:8080"` のように文字列長を持つ）、
+SQL の `REPLACE` や `sed` で URL を置換すると長さが合わなくなり、
+値が丸ごと読めなくなります。「サーバー移行したら設定が飛んだ」の典型的な原因です。
+
+`--export` を付けているため、ローカルの DB は書き換わりません。
+
+移設先に WP-CLI が無い前提のため、置換はローカルで済ませてから
+ダンプを持っていく方式にしています。
+
 ### Git 管理の方針
 
 WordPress 本体・`uploads`・データベース・`.env` は **Git 管理していません**。
