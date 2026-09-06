@@ -73,9 +73,20 @@ mp_section_open(
 	<p class="contact-empty"><?php esc_html_e( '連絡先は準備中です。', 'pacchi-portfolio' ); ?></p>
 <?php endif; ?>
 
-<h3 class="contact-form__heading"><?php esc_html_e( 'メッセージを送る', 'pacchi-portfolio' ); ?></h3>
-
 <?php
+/*
+ * フォームの表示可否。
+ *
+ * PHP からのメール送信が使えないサーバーではオフにする（カスタマイザー）。
+ * オフのときは上のメールアドレス案内だけが残る。
+ * 「送信できたように見えて届かない」状態を作らないための切り替え。
+ */
+if ( get_theme_mod( 'mp_show_contact_form', true ) ) :
+	?>
+
+	<h3 class="contact-form__heading"><?php esc_html_e( 'メッセージを送る', 'pacchi-portfolio' ); ?></h3>
+
+	<?php
 /*
  * 送信結果の表示。
  * $_GET の値は必ずサニタイズしてから使う。
@@ -147,5 +158,7 @@ endif;
 	</p>
 </form>
 
-<?php
+	<?php
+endif;
+
 mp_section_close();

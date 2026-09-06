@@ -79,6 +79,36 @@ function mp_customize_register( WP_Customize_Manager $wp_customize ): void {
 		)
 	);
 
+	/*
+	 * お問い合わせフォームの表示切り替え。
+	 *
+	 * サーバーによっては PHP からのメール送信が制限され、wp_mail() が
+	 * 失敗することがある（無料プランや、契約前のお試し期間など）。
+	 * その環境では「送信できたように見えて届かない」より、
+	 * フォームを出さずメールアドレスだけ案内するほうが親切。
+	 *
+	 * コードを消さずスイッチで切り替えられるようにしているのは、
+	 * 環境ごとに動く／動かないが変わるため。移設先で送信できるなら戻せる。
+	 */
+	$wp_customize->add_setting(
+		'mp_show_contact_form',
+		array(
+			'default'           => true,
+			'sanitize_callback' => 'mp_sanitize_checkbox',
+			'transport'         => 'refresh',
+		)
+	);
+
+	$wp_customize->add_control(
+		'mp_show_contact_form',
+		array(
+			'section'     => 'mp_site_options',
+			'label'       => __( 'お問い合わせフォームを表示する', 'pacchi-portfolio' ),
+			'description' => __( 'メール送信ができないサーバーではオフにします。オフのときはメールアドレスの案内のみ表示されます。', 'pacchi-portfolio' ),
+			'type'        => 'checkbox',
+		)
+	);
+
 	$wp_customize->add_setting(
 		'mp_footer_tagline',
 		array(
