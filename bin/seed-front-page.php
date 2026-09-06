@@ -123,14 +123,15 @@ if ( $avatar_id ) {
 }
 
 update_field( 'services_title', '対応できる領域', $page_id );
-update_field( 'services_lead', '実装だけでなく、要件の整理から公開後の保守運用まで一貫して対応します。お気軽にご相談ください。', $page_id );
+update_field( 'services_lead', 'WordPress サイトの制作・改修から、Web システムの開発・運用まで対応します。仕様が固まっていない段階のご相談も歓迎です。', $page_id );
 
 // 移植元の id とアイコンの対応。
 $icon_map = array(
-	'backend' => 'backend',
-	'cloud'   => 'cloud',
-	'design'  => 'design',
-	'ai'      => 'ai',
+	'wordpress' => 'site',
+	'web'       => 'backend',
+	'cloud'     => 'cloud',
+	'design'    => 'design',
+	'ai'        => 'ai',
 );
 
 foreach ( array_values( (array) ( $data['services'] ?? array() ) ) as $i => $service ) {

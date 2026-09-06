@@ -410,6 +410,7 @@ function pc_service_group( int $index ): array {
 				'name'          => 'icon',
 				'type'          => 'select',
 				'choices'       => array(
+					'site'    => __( 'サイト制作', 'portfolio-core' ),
 					'backend' => __( 'サーバー', 'portfolio-core' ),
 					'cloud'   => __( 'クラウド', 'portfolio-core' ),
 					'design'  => __( '設計', 'portfolio-core' ),
