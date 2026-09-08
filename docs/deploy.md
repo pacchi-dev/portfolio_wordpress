@@ -24,6 +24,10 @@ contact@pacchi.net               メール（Gmail へ転送）
 | 独自SSL | 0 円 |
 | **ドメイン pacchi.net** | **約 1,920 円/年** |
 
+**タダサーバーは 3 ヶ月ごとに利用期限の更新が必要。**
+カラフルボックスの会員画面（cPanel ではない）から手続きする。
+更新を忘れるとサイトが停止する。**カレンダーに登録しておくこと。**
+
 ---
 
 ## 注意
@@ -61,16 +65,84 @@ cPanel の「**WordPress 快速セットアップ**」（または WordPress イ
 
 この時点で `https://pacchi.net/` に初期状態の WordPress が出れば OK。
 
+### PHP のバージョンを上げる（必須）
+
+タダサーバーの初期値は **PHP 7.4**。このままではテーマが動かない。
+
+```
+cPanel →「ソフトウェア」→「MultiPHP マネージャー」
+→ 対象ドメインにチェック → PHP バージョンで 8.3 を選択 → 適用
+```
+
+**なぜ 8.3 か**
+
+- ローカルの開発環境が `wordpress:php8.3-apache`。**本番と揃えれば環境差分による事故が起きない**
+- 8.1 はセキュリティ更新が 2025-12-31 に終了済み。`Requires PHP: 8.1` は最低ラインの宣言であって推奨値ではない
+- 8.3 のセキュリティ更新は 2027-12-31 まで
+
+無い場合は 8.2 → 8.4 の順に選ぶ。**8.1 以下は選ばない。**
+
+**PHP 7.4 のままだと何が起きるか**
+
+テーマとプラグインは PHP 8.0 で追加された `str_contains` / `str_starts_with` を使っている。
+7.4 にこの関数は無く、`Fatal error: Call to undefined function` で白画面になる。
+
+| 箇所 | 壊れるもの |
+|---|---|
+| `themes/pacchi-portfolio/inc/security.php` | REST API 全体 |
+| `themes/pacchi-portfolio/inc/template-tags.php` | 構成図（実績詳細） |
+| `plugins/portfolio-core/inc/contact-form.php` | お問い合わせの送信 |
+| `plugins/portfolio-core/inc/github-client.php` | リポジトリ一覧 |
+| `koumuten-wp/.../inc/floor-plan.php` | 工務店サイトの間取り図 |
+
+`.htaccess` の `AddHandler ... ea-php74` の行は手で書き換えない。
+MultiPHP マネージャーが自動で更新する。手で触ると二重定義になる。
+
 ---
 
 ## 3. SSL を有効にする
 
-タダサーバーは独自SSLが標準搭載。cPanel の SSL 設定で `pacchi.net` に証明書を割り当て、
-**HTTP から HTTPS への転送**を有効にする。
-
-`http://pacchi.net` が `https://` に転送されれば完了。
-
 **先に SSL を有効にしておくこと。** 次のステップで `https://` の URL を DB に焼き込むため。
+
+### 3-1. 証明書を発行する
+
+cPanel（**`http://ドメイン名/cpanel`**。会員画面とは別物で、ログイン情報も別）を開く。
+
+```
+「セキュリティ」→「SSL / TLS ステータス」→ 対象ドメインを選択 →「AutoSSLを実行する」
+```
+
+約 10 分で Let's Encrypt の証明書が入る。ドメイン追加直後は失敗することがあり、
+公式は最大 24 時間としている。確認は次のコマンドで行う。
+
+```bash
+echo | openssl s_client -connect ドメイン名:443 -servername ドメイン名 2>/dev/null \
+  | openssl x509 -noout -subject -issuer -dates
+```
+
+`issuer` が `CN=ドメイン名`（= subject と同じ）なら**自己署名のままで未発行**。
+`Let's Encrypt` になっていれば成功。
+
+### 3-2. HTTPS へ転送する
+
+cPanel の「ドメイン」画面に **「HTTPSリダイレクトを強制する」** というトグルがあるが、
+**タダサーバー（無料プラン）ではトグルもチェックボックスも操作できない。** 機能が
+無効化されているため、`.htaccess` で設定する。
+
+「ファイル マネージャ」で `public_html/.htaccess` を開き、**先頭**に追記する。
+（`.htaccess` が見えないときは、右上の「設定」で「隠しファイルを表示する」を有効にする）
+
+```apache
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+```
+
+**`# BEGIN WordPress` 〜 `# END WordPress` の内側に書かないこと。**
+このブロックは WordPress が自動生成し、パーマリンク保存のたびに上書きされる。
+
+なお DB を入れ替えると `siteurl` が `https://` になるため、WordPress 自身も
+`http://` を転送するようになる。上記はその手前の層で確実に転送するための設定。
 
 ---
 
@@ -271,10 +343,25 @@ cPanel の「メールアカウント」で `contact@pacchi.net` を作成する
 | 画像が出ない | `uploads/` のアップロード漏れ |
 | 一部の設定が消えた | `sed` や SQL の `REPLACE` で URL を置換した（`export.sh` を使えば起きない） |
 | フォームが届かない | サーバーのメール制限。メールアカウント作成後に再確認 |
+| `https://` に繋がらない | AutoSSL が未実行、または自己署名のまま（ステップ 3-1） |
+| `http://` のまま表示される | 無料プランは強制リダイレクトのトグルが使えない。`.htaccess` で対応（ステップ 3-2） |
+| ある日サイトが消えた | **3 ヶ月ごとの利用期限更新を忘れた**（冒頭の注意を参照） |
+| 白画面 / `undefined function str_contains` | PHP が 7.4 のまま（ステップ 2 の PHP バージョン） |
 
 ---
 
-## いま止まっている作業
+## 進捗
 
-- ステップ 1（申し込みとドメイン取得）が済んでいない
-- **ステップ 5・12-2 の書き出しは、URL が確定してから実行する**
+| | 状態 |
+|---|---|
+| 1. 申し込み・ドメイン取得 | 完了（`pacchi.net`) |
+| 2. WordPress 設置（ルート） | 完了 |
+| 3-1. SSL 証明書 | 完了（Let's Encrypt / 期限 2026-12-06・自動更新） |
+| 2-2. PHP を 8.3 へ | **未**（初期値は 7.4。最優先） |
+| 3-2. HTTPS への転送 | 作業中（`.htaccess` で対応） |
+| 4. ACF のインストール | **未** |
+| 5〜9. 書き出し〜公開 | 未 |
+| 10〜12. 工務店サイト | 未 |
+| 13〜15. メールと仕上げ | 未 |
+
+**ステップ 5 の書き出しはステップ 4 の完了後に実行する。**
