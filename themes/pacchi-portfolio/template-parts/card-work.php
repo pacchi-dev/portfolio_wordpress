@@ -11,6 +11,7 @@ $pp_id      = get_the_ID();
 $pp_summary = (string) get_field( 'summary', $pp_id );
 $pp_period  = (string) get_field( 'period', $pp_id );
 $pp_status  = (string) get_field( 'status', $pp_id );
+$pp_site    = (string) get_field( 'site_url', $pp_id );
 
 $pp_terms = get_the_terms( $pp_id, 'technology' );
 $pp_tech  = is_array( $pp_terms ) ? wp_list_pluck( $pp_terms, 'name' ) : array();
@@ -23,6 +24,14 @@ $pp_status_labels = array(
 ?>
 
 <article <?php post_class( 'work-card' ); ?>>
+	<?php
+	/*
+	 * カード全体を 1 つのリンクにしている。
+	 * 公開中のサイトがある場合はその導線も出したいが、
+	 * a 要素の入れ子は HTML として不正で、ブラウザが勝手に分解する。
+	 * そのため «リンクの外側» に別のリンクを並べる。
+	 */
+	?>
 	<a class="work-card__link" href="<?php the_permalink(); ?>">
 		<?php if ( has_post_thumbnail() ) : ?>
 			<div class="work-card__thumb">
@@ -59,4 +68,14 @@ $pp_status_labels = array(
 			<?php endif; ?>
 		</div>
 	</a>
+
+	<?php if ( '' !== $pp_site ) : ?>
+		<div class="work-card__actions">
+			<a class="work-card__site" href="<?php echo esc_url( $pp_site ); ?>" target="_blank" rel="noreferrer noopener">
+				<?php esc_html_e( 'サイトを見る', 'pacchi-portfolio' ); ?>
+				<span class="work-card__site-icon" aria-hidden="true">&#8599;</span>
+				<span class="screen-reader-text"><?php esc_html_e( '別のタブで開きます', 'pacchi-portfolio' ); ?></span>
+			</a>
+		</div>
+	<?php endif; ?>
 </article>

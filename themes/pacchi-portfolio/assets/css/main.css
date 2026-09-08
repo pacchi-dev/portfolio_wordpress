@@ -1772,10 +1772,20 @@ svg {
    -------------------------------------------------------------------------- */
 .work-grid { display: grid; gap: 1.5rem; }
 
-.work-card__link {
+/*
+ * カードは «本体リンク» と «サイトへのリンク» の 2 つを縦に積む。
+ * a の入れ子を避けるための構成なので、article 側で高さを揃える。
+ */
+.work-card {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.work-card__link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   overflow: hidden;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-lg);
@@ -1826,6 +1836,36 @@ svg {
   font-size: var(--text-base);
   line-height: 1.8;
   color: var(--color-muted);
+}
+
+.works-more { margin-top: 1.5rem; }
+
+/* 公開中のサイトへの導線。カード本体リンクの下に置く。 */
+.work-card__actions {
+  margin-top: 0.625rem;
+}
+
+.work-card__site {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--tap-target);
+  padding: 0 0.875rem;
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.work-card__site:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.work-card__site-icon {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
 }
 
 .badge--released {
