@@ -220,6 +220,27 @@ function pc_contact_from_address(): string {
 	}
 
 	/*
+	 * 連絡先が «このサイトと同じドメイン» のアドレスなら、それを差出人にする。
+	 *
+	 * From は SPF / DKIM の評価対象になるため、送信サーバーが権限を持つ
+	 * ドメインでなければならない。連絡先が Gmail などの外部アドレスの場合に
+	 * それを From にすると、なりすまし扱いされて迷惑メールに落ちる。
+	 * 同一ドメインのときだけ採用し、それ以外は no-reply@ に退避する。
+	 *
+	 * 実在するアドレスを差出人にできると到達率が上がる。
+	 * 受信箱のない no-reply@ は、それ自体が減点要素になるため。
+	 */
+	$recipient = pc_contact_recipient();
+
+	if ( is_email( $recipient ) ) {
+		$recipient_host = strtolower( (string) substr( strrchr( $recipient, '@' ) ?: '', 1 ) );
+
+		if ( '' !== $recipient_host && $recipient_host === strtolower( $host ) ) {
+			return $recipient;
+		}
+	}
+
+	/*
 	 * PHPMailer は TLD を持たないドメイン（localhost 等）を
 	 * 無効なアドレスとして拒否する。ローカル開発では From が
 	 * no-reply@localhost になり送信が失敗するため、
