@@ -2,7 +2,13 @@
 #
 # 共用レンタルサーバーへ移設するためのファイル一式を書き出す。
 #
-#   使い方: ./bin/export.sh https://example.xfree.jp
+#   使い方: ./bin/export.sh <公開URL> [テーブル接頭辞]
+#
+#   例（接頭辞が既定の wp_ のまま）:
+#     ./bin/export.sh https://pacchi.net
+#
+#   例（設置先がランダム接頭辞で構築されている場合）:
+#     ./bin/export.sh https://pacchi.net ust2_
 #
 # 出力先: bin/dist/
 #   database.sql  URL を移設先へ置換済みの DB ダンプ
@@ -30,12 +36,18 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 TARGET_URL="${1:-}"
+NEW_PREFIX="${2:-wp_}"
 
 if [ -z "${TARGET_URL}" ]; then
   echo "エラー: 移設先の URL を指定してください" >&2
-  echo "  例: ./bin/export.sh https://example.xfree.jp" >&2
+  echo "  例: ./bin/export.sh https://pacchi.net ust2_" >&2
   exit 1
 fi
+
+case "${NEW_PREFIX}" in
+  *_) : ;;
+  *)  echo "エラー: テーブル接頭辞はアンダースコアで終わらせてください（例: ust2_）" >&2; exit 1 ;;
+esac
 
 # 末尾のスラッシュは付けない（DB 内の URL と形式を揃えるため）
 TARGET_URL="${TARGET_URL%/}"
@@ -49,6 +61,7 @@ fi
 set -a; source .env; set +a
 
 SOURCE_URL="${WP_URL%/}"
+OLD_PREFIX="wp_"
 CLI_CONTAINER="portfolio_wp_cli"
 DIST="bin/dist"
 
@@ -56,8 +69,25 @@ wp() {
   docker exec "${CLI_CONTAINER}" wp --path=/var/www/html "$@"
 }
 
-echo "==> 移設元: ${SOURCE_URL}"
-echo "==> 移設先: ${TARGET_URL}"
+# 開発専用プラグイン。本番の active_plugins に残ると
+#   ・ファイルが無いため管理画面にエラーが出る
+#   ・Query Monitor は SQL やフックの内訳を表示する調査ツールで、
+#     本番に置くこと自体が情報漏洩になる
+# ダンプの取得中だけ無効化し、終わったら必ず戻す。
+DEV_ONLY_PLUGINS="query-monitor"
+
+restore_dev_plugins() {
+  for plugin in ${DEV_ONLY_PLUGINS}; do
+    if [ -n "${DEACTIVATED:-}" ]; then
+      wp plugin activate "${plugin}" --quiet 2>/dev/null || true
+    fi
+  done
+}
+# 途中で失敗してもローカルの状態を戻す
+trap restore_dev_plugins EXIT
+
+echo "==> 移設元: ${SOURCE_URL}  (接頭辞 ${OLD_PREFIX})"
+echo "==> 移設先: ${TARGET_URL}  (接頭辞 ${NEW_PREFIX})"
 echo ""
 
 rm -rf "${DIST}"
@@ -69,9 +99,112 @@ mkdir -p "${DIST}/wp-content/themes" "${DIST}/wp-content/plugins" "${DIST}/wp-co
 #    --all-tables を付けないと wp_ 接頭辞のテーブルしか対象にならない。
 #    --export でローカルの DB は書き換えない。
 # ---------------------------------------------------------------------------
+echo "==> 開発専用プラグインを一時的に無効化します"
+DEACTIVATED=""
+for plugin in ${DEV_ONLY_PLUGINS}; do
+  if wp plugin is-active "${plugin}" 2>/dev/null; then
+    wp plugin deactivate "${plugin}" --quiet
+    DEACTIVATED="yes"
+    echo "    ${plugin} を無効化（書き出し後に戻します）"
+  fi
+done
+
+# 一時キャッシュを捨ててから書き出す。
+#   ・更新チェックの結果（_site_transient_update_plugins など）は
+#     ローカルの状態を写したもので、移設先には無意味
+#   ・GitHub API のキャッシュも消えるが、本番の初回表示で取り直される
+echo "==> 一時キャッシュ（トランジェント）を削除します"
+wp transient delete --all --quiet 2>/dev/null || true
+
 echo "==> DB をエクスポートします（URL を置換）"
 wp search-replace "${SOURCE_URL}" "${TARGET_URL}" \
   --all-tables --export=/scripts/dist/database.sql --quiet
+
+# ダンプは取り終えたので、ローカルはすぐ元に戻す
+restore_dev_plugins
+DEACTIVATED=""
+
+# ---------------------------------------------------------------------------
+# 2. テーブル接頭辞の書き換え
+#
+#    レンタルサーバーの自動インストーラは、推測を避けるため
+#    ust2_ のようなランダムな接頭辞で WordPress を構築することがある。
+#    その場合、wp_ のままのダンプを入れても wp-config.php が
+#    自分のテーブルを見つけられず、インストール画面に戻ってしまう。
+#
+#    注意すべきは、接頭辞がテーブル名だけでなく
+#    一部のレコードの「値」にも埋め込まれている点。
+#      options  の option_name = 'wp_user_roles'
+#      usermeta の meta_key    = 'wp_capabilities' / 'wp_user_level' ほか
+#    ここを書き換え忘れると、移設先で管理者権限を失い
+#    ログインはできるのに何も操作できない状態になる。
+# ---------------------------------------------------------------------------
+if [ "${NEW_PREFIX}" != "${OLD_PREFIX}" ]; then
+  echo "==> テーブル接頭辞を ${OLD_PREFIX} から ${NEW_PREFIX} へ書き換えます"
+
+  python3 - "${DIST}/database.sql" "${OLD_PREFIX}" "${NEW_PREFIX}" <<'PYEOF'
+import re, sys
+path, old, new = sys.argv[1], sys.argv[2], sys.argv[3]
+sql = open(path, encoding='utf-8', errors='surrogateescape').read()
+
+# (a) テーブル名。SQL 中では必ずバッククォートで囲まれているため、
+#     `wp_ を目印にすれば本文中の "wp_head" などを巻き込まない。
+sql, n_tables = re.subn(r'`' + re.escape(old), '`' + new, sql)
+
+# (b) 接頭辞が「値」として入っているレコード。
+keys = [
+    'user_roles', 'capabilities', 'user_level',
+    'dashboard_quick_press_last_post_id',
+    'user-settings', 'user-settings-time',
+]
+n_values = 0
+for k in keys:
+    sql, c = re.subn(r"'" + re.escape(old + k) + r"'", "'" + new + k + "'", sql)
+    n_values += c
+
+open(path, 'w', encoding='utf-8', errors='surrogateescape').write(sql)
+print(f'    テーブル名 {n_tables} 箇所 / 権限まわりの値 {n_values} 箇所を書き換え')
+PYEOF
+fi
+
+# 検査対象は active_plugins のみ。
+# 更新チェックのキャッシュに名前が載っていても実害はないため、
+# 「本番で実際に読み込まれる値」だけを見る。
+python3 - "${DIST}/database.sql" ${DEV_ONLY_PLUGINS} <<'PYEOF'
+import io, re, sys
+sql = io.open(sys.argv[1], encoding='utf-8', errors='surrogateescape').read()
+m = re.search(r"active_plugins'\s*,\s*'(.*?)'\s*,", sql, re.S)
+if not m:
+    print('    警告: active_plugins が見つかりません', file=sys.stderr)
+    sys.exit(0)
+value = m.group(1)
+for plugin in sys.argv[2:]:
+    if plugin + '/' in value:
+        print(f'    警告: active_plugins に {plugin} が残っています', file=sys.stderr)
+plugins = re.findall(r'\\"([^\\"]+\.php)\\"', value)
+print('    有効化されるプラグイン: ' + (', '.join(plugins) if plugins else 'なし'))
+PYEOF
+
+# 検索エンジンの設定。ローカルは noindex にしてあるため、
+# そのまま移すと本番も Google に載らない。移設のたびに見落とすので明示する。
+BLOG_PUBLIC=$(grep -oE "'blog_public', *'[^']*'" "${DIST}/database.sql" | head -1 | grep -oE "'[01]'" | tail -1 | tr -d "'")
+if [ "${BLOG_PUBLIC:-1}" = "0" ]; then
+  echo "    注意: このダンプは noindex（blog_public=0）です。"
+  echo "          本番で検索に載せる場合は、移設後に"
+  echo "          「設定 > 表示設定 > 検索エンジンがインデックスしないようにする」を外してください。"
+else
+  echo "    検索エンジン: インデックス許可（blog_public=1）"
+fi
+
+# 管理者アカウント。ローカルは admin/admin なので、そのまま移すと
+# 公開サーバーが「最も狙われる組み合わせ」で立ち上がることになる。
+if [ "${WP_ADMIN_USER:-}" = "admin" ] || [ "${WP_ADMIN_PASSWORD:-}" = "admin" ]; then
+  echo ""
+  echo "    ！ このダンプにはローカルの管理者アカウントが入っています"
+  echo "      ユーザー名 ${WP_ADMIN_USER:-admin} / パスワードは .env の WP_ADMIN_PASSWORD"
+  echo "      移設後ただちに、パスワード変更 → 別名の管理者を作成 → admin を削除 を行うこと。"
+  echo ""
+fi
 
 REPLACED=$(grep -c "${TARGET_URL}" "${DIST}/database.sql" || true)
 echo "    database.sql に移設先 URL が ${REPLACED} 箇所"

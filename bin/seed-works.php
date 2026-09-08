@@ -77,6 +77,7 @@ foreach ( $pc_works as $pc_item ) {
 	update_field( 'period', (string) ( $pc_item['period'] ?? '' ), $pc_post_id );
 	update_field( 'status', (string) ( $pc_item['status'] ?? '' ), $pc_post_id );
 	update_field( 'github_url', (string) ( $pc_item['githubUrl'] ?? '' ), $pc_post_id );
+	update_field( 'site_url', (string) ( $pc_item['siteUrl'] ?? '' ), $pc_post_id );
 	update_field( 'summary', (string) ( $pc_item['summary'] ?? '' ), $pc_post_id );
 	update_field( 'architecture', (string) ( $pc_item['architecture'] ?? '' ), $pc_post_id );
 	update_field(

@@ -5,7 +5,7 @@
     "image": "koumuten-site.png",
     "imageAlt": "架空の工務店コーポレートサイトのトップページ。住宅の外観写真をヒーローに使用",
     "period": "2026.09",
-    "status": "",
+    "status": "released",
     "githubUrl": "https://github.com/pacchi-dev/koumuten-wp",
     "summary": "注文住宅・リノベーションの工務店を想定したコーポレートサイト。実在する工務店サイト 50 件の構造を調査し、施工実績のフィールド設計や導線を実サイトに合わせている。架空の企業を想定した制作サンプル。",
     "responsibilities": [
@@ -25,7 +25,8 @@
       "mysql",
       "docker",
       "wp-cli"
-    ]
+    ],
+    "siteUrl": "https://pacchi.net/koumuten"
   },
   {
     "slug": "wordpress-portfolio",
@@ -33,7 +34,7 @@
     "image": "wordpress-portfolio.png",
     "imageAlt": "WordPress で構築したポートフォリオサイトのトップページ",
     "period": "2026.09 -",
-    "status": "development",
+    "status": "released",
     "githubUrl": "",
     "summary": "オリジナルテーマと自作プラグインで構築したポートフォリオ。カスタム投稿タイプ、ACF、外部 API 連携、自作フォームを含む。",
     "responsibilities": [
@@ -49,7 +50,8 @@
       "mysql",
       "php",
       "wordpress"
-    ]
+    ],
+    "siteUrl": "https://pacchi.net"
   },
   {
     "slug": "go-booking-api",
