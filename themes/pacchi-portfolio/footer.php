@@ -20,11 +20,8 @@ defined( 'ABSPATH' ) || exit;
 		</p>
 		<p class="site-footer__tagline">
 			<?php
-			/*
-			 * 肩書きと技術スタックは Phase 5 で ACF に移す。
-			 * この時点ではテーマ内の定数として持つ。
-			 */
-			echo esc_html( '// Backend Engineer — Go · PHP / Laravel · AWS' );
+			// 「外観 > カスタマイズ > サイト設定」で変更できる。
+			echo esc_html( (string) get_theme_mod( 'pp_footer_tagline', '// Backend Engineer — Go · PHP / Laravel · AWS' ) );
 			?>
 		</p>
 	</div>
