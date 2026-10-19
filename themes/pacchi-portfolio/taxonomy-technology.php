@@ -51,7 +51,7 @@ $pp_term = get_queried_object();
 							<?php echo esc_html( 'work' === $pp_type ? __( '制作実績', 'pacchi-portfolio' ) : __( '実務経験', 'pacchi-portfolio' ) ); ?>
 						</span>
 						<span class="term-item__title text-balance-ja"><?php the_title(); ?></span>
-						<?php $pp_period = (string) get_field( 'period' ); ?>
+						<?php $pp_period = pp_field( 'period' ); ?>
 						<?php if ( '' !== $pp_period ) : ?>
 							<span class="term-item__period"><?php echo esc_html( $pp_period ); ?></span>
 						<?php endif; ?>

@@ -7,6 +7,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/*
+ * ACF が無効・更新失敗の状態でも致命的エラーにせず、
+ * このセクションを出力しないで済ませる。
+ * README が謳う「ACF が無効でも致命的エラーにならない」の実装。
+ */
+if ( ! pp_acf_active() ) {
+	return;
+}
+
 $pp_page_id = (int) get_option( 'page_on_front' );
 $pp_title   = (string) get_field( 'about_title', $pp_page_id );
 $pp_body    = (string) get_field( 'about_body', $pp_page_id );

@@ -13,13 +13,13 @@ while ( have_posts() ) :
 	the_post();
 
 	$pp_id       = get_the_ID();
-	$pp_summary  = (string) get_field( 'summary', $pp_id );
-	$pp_period   = (string) get_field( 'period', $pp_id );
-	$pp_status   = (string) get_field( 'status', $pp_id );
-	$pp_github   = (string) get_field( 'github_url', $pp_id );
-	$pp_site     = (string) get_field( 'site_url', $pp_id );
-	$pp_arch     = (string) get_field( 'architecture', $pp_id );
-	$pp_duties   = pp_lines_to_array( (string) get_field( 'responsibilities', $pp_id ) );
+	$pp_summary  = pp_field( 'summary', $pp_id );
+	$pp_period   = pp_field( 'period', $pp_id );
+	$pp_status   = pp_field( 'status', $pp_id );
+	$pp_github   = pp_field( 'github_url', $pp_id );
+	$pp_site     = pp_field( 'site_url', $pp_id );
+	$pp_arch     = pp_field( 'architecture', $pp_id );
+	$pp_duties   = pp_lines_to_array( pp_field( 'responsibilities', $pp_id ) );
 
 	$pp_terms = get_the_terms( $pp_id, 'technology' );
 	$pp_tech  = is_array( $pp_terms ) ? $pp_terms : array();

@@ -73,9 +73,7 @@ function pp_output_meta_tags(): void {
 function pp_meta_description(): string {
 	if ( is_front_page() ) {
 		$page_id = (int) get_option( 'page_on_front' );
-		$lead    = $page_id > 0 && function_exists( 'get_field' )
-			? (string) get_field( 'hero_lead', $page_id )
-			: '';
+		$lead    = $page_id > 0 ? pp_field( 'hero_lead', $page_id ) : '';
 
 		if ( '' !== $lead ) {
 			return pp_trim_text( $lead, 120 );
@@ -85,7 +83,8 @@ function pp_meta_description(): string {
 	}
 
 	if ( is_singular() ) {
-		$summary = (string) get_field( 'summary', get_the_ID() );
+		// pp_field() は ACF 無効時に空文字を返す（致命的エラーにしない）。
+		$summary = pp_field( 'summary', get_the_ID() );
 
 		if ( '' !== $summary ) {
 			return pp_trim_text( $summary, 120 );

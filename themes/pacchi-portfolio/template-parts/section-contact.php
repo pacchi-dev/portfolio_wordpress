@@ -10,6 +10,15 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/*
+ * ACF が無効・更新失敗の状態でも致命的エラーにせず、
+ * このセクションを出力しないで済ませる。
+ * README が謳う「ACF が無効でも致命的エラーにならない」の実装。
+ */
+if ( ! pp_acf_active() ) {
+	return;
+}
+
 $pp_page_id = (int) get_option( 'page_on_front' );
 
 $pp_email = (string) get_field( 'contact_email', $pp_page_id );
@@ -82,6 +91,15 @@ pp_section_open(
  * 「送信できたように見えて届かない」状態を作らないための切り替え。
  */
 if ( get_theme_mod( 'pp_show_contact_form', true ) ) :
+	?>
+
+	<?php
+/*
+ * フォームは portfolio-core プラグインが提供する定数とハンドラに依存する。
+ * プラグインが無効なときに定数を参照すると PHP 8 では Fatal Error になるため、
+ * 定数の有無で囲んで、連絡先リンクだけを表示した状態で成立させる。
+ */
+if ( defined( 'PC_CONTACT_ACTION' ) && defined( 'PC_CONTACT_NONCE_ACTION' ) ) :
 	?>
 
 	<h3 class="contact-form__heading"><?php esc_html_e( 'メッセージを送る', 'pacchi-portfolio' ); ?></h3>
@@ -157,6 +175,10 @@ endif;
 		</button>
 	</p>
 </form>
+
+	<?php
+endif;
+?>
 
 	<?php
 endif;

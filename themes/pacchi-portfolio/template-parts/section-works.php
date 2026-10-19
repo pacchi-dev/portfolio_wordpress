@@ -36,8 +36,14 @@ if ( ! $pp_works_query->have_posts() ) {
 	return;
 }
 
-// アーカイブに続きがあるときだけ「すべて見る」を出す。
-$pp_works_total = (int) wp_count_posts( 'work' )->publish;
+/*
+ * アーカイブに続きがあるときだけ「すべて見る」を出す。
+ *
+ * wp_count_posts() は投稿タイプが未登録のとき publish を持たない
+ * stdClass を返す。プラグイン無効時に Warning を出さないよう既定値を置く。
+ */
+$pp_works_counts = wp_count_posts( 'work' );
+$pp_works_total  = (int) ( $pp_works_counts->publish ?? 0 );
 
 pp_section_open(
 	array(

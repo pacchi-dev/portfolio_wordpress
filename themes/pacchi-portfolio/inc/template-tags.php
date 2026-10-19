@@ -18,6 +18,39 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * ACF が利用可能かを返す。
+ *
+ * ACF を無効化・更新失敗した状態でも致命的エラーにせず、
+ * 該当セクションを出力しないで済ませるための判定。
+ * get_field() は ACF が提供する関数で、プラグインが無い環境では未定義になる。
+ *
+ * @return bool
+ */
+function pp_acf_active(): bool {
+	return function_exists( 'get_field' );
+}
+
+/**
+ * ACF のフィールド値を安全に取得する。
+ *
+ * ACF が無効でも致命的エラーにせず空文字を返す。
+ * ページ全体を描画するテンプレート（single-*.php / taxonomy-*.php）では
+ * 冒頭で return すると HTML が一切出力されず真っ白になるため、
+ * 早期 return ではなくこのラッパで個々の取得を無害化する。
+ *
+ * @param string   $name    フィールド名。
+ * @param int|bool $post_id 投稿 ID。省略時は現在の投稿。
+ * @return string
+ */
+function pp_field( string $name, $post_id = false ): string {
+	if ( ! pp_acf_active() ) {
+		return '';
+	}
+
+	return (string) get_field( $name, $post_id );
+}
+
+/**
  * 改行区切りのテキストを配列に変換する。
  *
  * ACF 無料版には Repeater が無いため、箇条書きは textarea に
@@ -369,8 +402,14 @@ function pp_render_architecture( string $source ): void {
  * @return array<int, array<int, array{label: string, accent: bool}>> 解釈できない場合は空配列。
  */
 function pp_parse_architecture( string $source ): array {
-	// 改行を含む従来の ASCII アートは対象外。1 行の記法だけを扱う。
-	if ( preg_match( '/\R/', $source ) ) {
+	/*
+	 * 改行を含む従来の ASCII アートは対象外。1 行の記法だけを扱う。
+	 *
+	 * /u は必須。\R は \x85（NEL）にもマッチするが、/u が無いと PCRE が
+	 * バイト単位で動作し、日本語 UTF-8 の継続バイト 0x85（「ゅ」「ぅ」等）を
+	 * 改行と誤認する。
+	 */
+	if ( preg_match( '/\R/u', $source ) ) {
 		return array();
 	}
 
