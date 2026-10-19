@@ -112,9 +112,14 @@ ftp_size() {
 #   ・wp-config.php のような «秘密を含むもの» は暗号化必須。
 #     通らなければ失敗させる。平文には «絶対に» 落とさない。
 #   ・テーマや画像のような «公開されるもの» は、暗号化で失敗したら
-#     平文データチャネルへ切り替える。内容は HTTPS で誰でも取得でき、
-#     GitHub でも公開しているため、秘匿する意味がない。
+#     平文データチャネルへ切り替える。
 # パスワードはどちらの経路でも平文にならない。
+#
+# ただし平文データチャネルで失われるのは «機密性» だけではない。
+# 転送物は本番で実行される PHP を含む書庫であり、経路上で差し替えられれば
+# 任意コード実行になる。«完全性» はバイト数一致だけでは担保できないため、
+# 転送後に HTTPS 経由で取得し直して sha256 を照合する（verify_remote_hash）。
+# 照合に通らない限り展開スクリプトは実行しない。
 FTP_RETRIES=3
 
 ftp_put() {
@@ -153,6 +158,49 @@ ftp_put() {
   return 1
 }
 
+# 転送したファイルを HTTPS 経由で取得し直し、ローカルと sha256 が一致するか確かめる。
+# FTP のデータチャネルが平文でも、ここで改ざんを検出できる。
+# 取得に HTTPS を使うのは、FTP とは別経路で読み直すことに意味があるため。
+verify_remote_hash() {
+  local src="$1" name="$2" local_hash remote_hash tmp
+
+  if ! command -v shasum >/dev/null 2>&1 && ! command -v sha256sum >/dev/null 2>&1; then
+    echo "    エラー: sha256 を計算できる コマンドが見つかりません" >&2
+    return 1
+  fi
+
+  sha256_of() {
+    if command -v sha256sum >/dev/null 2>&1; then
+      sha256sum "$1" | awk '{print $1}'
+    else
+      shasum -a 256 "$1" | awk '{print $1}'
+    fi
+  }
+
+  local_hash=$(sha256_of "${src}")
+  tmp="$(mktemp -t deploy-verify)"
+
+  if ! curl --silent --show-error --fail --max-time 300 \
+      "${DEPLOY_URL}/${name}" -o "${tmp}" 2>/dev/null; then
+    rm -f "${tmp}"
+    echo "    エラー: ${name} を HTTPS で取得できず、完全性を検証できません" >&2
+    return 1
+  fi
+
+  remote_hash=$(sha256_of "${tmp}")
+  rm -f "${tmp}"
+
+  if [ "${local_hash}" != "${remote_hash}" ]; then
+    echo "    エラー: ${name} の sha256 が一致しません（改ざんまたは転送破損）" >&2
+    echo "      ローカル: ${local_hash}" >&2
+    echo "      サーバー: ${remote_hash}" >&2
+    return 1
+  fi
+
+  echo "    sha256 一致を確認しました（${local_hash:0:16}…）"
+  return 0
+}
+
 # 単発ファイル（wp-config.php など）を先に置く。
 # 書庫より前に送っておけば、展開直後から動作する。
 if [ -n "${EXTRA_FILE:-}" ] && [ -f "${EXTRA_FILE}" ]; then
@@ -173,6 +221,15 @@ for ARCHIVE in "${ARCHIVES[@]}"; do
 
   echo "==> ${ARCHIVE} を転送します"
   ftp_put "${DIST}/${ARCHIVE}" "${ARCHIVE}"
+
+  # 展開前に完全性を確認する。ここで止めれば改ざん書庫は実行されない。
+  if ! verify_remote_hash "${DIST}/${ARCHIVE}" "${ARCHIVE}"; then
+    echo "" >&2
+    echo "    展開を中止しました。サーバー上の次のファイルを手で削除してください:" >&2
+    echo "      ${FTP_REMOTE_DIR}/${ARCHIVE}" >&2
+    exit 1
+  fi
+
   ftp_put "${TMP_UNPACK}" "${UNPACK_NAME}"
   rm -f "${TMP_UNPACK}"
 
