@@ -44,9 +44,17 @@ $pp_term = get_queried_object();
 			while ( have_posts() ) :
 				the_post();
 				$pp_type = get_post_type();
+
+				/*
+				 * 実務経験は個別ページを持たない（post-types.php の
+				 * publicly_queryable => false）。トップの該当セクションへ送る。
+				 */
+				$pp_link = ( 'experience' === $pp_type )
+					? home_url( '/#experience' )
+					: (string) get_permalink();
 				?>
 				<li>
-					<a class="term-item" href="<?php the_permalink(); ?>">
+					<a class="term-item" href="<?php echo esc_url( $pp_link ); ?>">
 						<span class="term-item__type">
 							<?php echo esc_html( 'work' === $pp_type ? __( '制作実績', 'pacchi-portfolio' ) : __( '実務経験', 'pacchi-portfolio' ) ); ?>
 						</span>

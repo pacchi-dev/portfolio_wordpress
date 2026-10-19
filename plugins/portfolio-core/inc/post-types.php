@@ -61,9 +61,8 @@ function pc_register_post_types(): void {
 	/*
 	 * experience — 実務経験
 	 *
-	 * has_archive を false にしているのは、トップページの
-	 * サブループで一覧表示し、独立したアーカイブページを持たないため。
-	 * 個別ページ（/experience/{slug}/）は残す。
+	 * トップページのサブループで一覧表示する。
+	 * アーカイブも個別ページも持たず、管理画面でのみ編集する。
 	 */
 	register_post_type(
 		'experience',
@@ -77,16 +76,31 @@ function pc_register_post_types(): void {
 				'all_items'     => __( '実務経験一覧', 'portfolio-core' ),
 				'not_found'     => __( '実務経験が見つかりません。', 'portfolio-core' ),
 			),
-			'public'        => true,
-			'has_archive'   => false,
-			'rewrite'       => array(
-				'slug'       => 'experience',
-				'with_front' => false,
-			),
-			'show_in_rest'  => true,
-			'menu_icon'     => 'dashicons-businessperson',
-			'menu_position' => 6,
-			'supports'      => array( 'title', 'revisions', 'page-attributes' ),
+			/*
+			 * 個別ページを持たない投稿タイプ。
+			 *
+			 * 実務経験はトップページの experience セクションが唯一の提示手段で、
+			 * アーカイブ（has_archive => false）も本文（supports に editor なし）も
+			 * 持たない設計にしてある。
+			 * それでも public => true のままだと /experience/{slug}/ が生成され、
+			 * 本文が空のページが公開されてしまうため、
+			 * publicly_queryable を明示的に false にしてフロント側の単独表示を止める。
+			 *
+			 * show_ui / show_in_menu は個別に true を指定して管理画面には残す。
+			 * public => false にすると管理画面からも消えてしまうため。
+			 */
+			'public'             => false,
+			'publicly_queryable' => false,
+			'exclude_from_search' => true,
+			'show_ui'            => true,
+			'show_in_menu'       => true,
+			'show_in_nav_menus'  => false,
+			'has_archive'        => false,
+			'rewrite'            => false,
+			'show_in_rest'       => true,
+			'menu_icon'          => 'dashicons-businessperson',
+			'menu_position'      => 6,
+			'supports'           => array( 'title', 'revisions', 'page-attributes' ),
 		)
 	);
 }
@@ -202,4 +216,47 @@ function pc_adjust_archive_order( WP_Query $query ): void {
 		$query->set( 'orderby', array( 'menu_order' => 'ASC', 'date' => 'DESC' ) );
 		$query->set( 'posts_per_page', 12 );
 	}
+
+	/*
+	 * 技術タームのアーカイブには実務経験も並べる。
+	 *
+	 * experience は publicly_queryable => false にしてあり、
+	 * 指定しないとタクソノミーアーカイブのメインクエリから除外される
+	 * （WordPress は公開クエリ可能な投稿タイプだけを対象にするため）。
+	 * 個別ページは持たせないが、「この技術を使った実績・経験」の一覧には
+	 * 載せたいので、ここで明示的に対象へ加える。
+	 */
+	if ( $query->is_tax( 'technology' ) ) {
+		$query->set( 'post_type', array( 'work', 'experience' ) );
+		$query->set( 'orderby', array( 'type' => 'ASC', 'menu_order' => 'ASC' ) );
+	}
+}
+
+/**
+ * 旧 /experience/{slug}/ をトップの該当セクションへ 301 で送る。
+ *
+ * 実務経験の個別ページは publicly_queryable => false で廃止したが、
+ * 公開済みのサイトなので外部に URL が残っている可能性がある。
+ * 404 を返さず、同じ内容が載っているトップのセクションへ誘導する。
+ *
+ * 恒久的な移動なので 301。検索エンジンにも移転として伝わる。
+ */
+add_action( 'template_redirect', 'pc_redirect_legacy_experience_urls' );
+function pc_redirect_legacy_experience_urls(): void {
+	if ( ! is_404() ) {
+		return;
+	}
+
+	$path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
+
+	// サブディレクトリ運用でも効くよう、ホーム配下の相対パスで判定する。
+	$home_path = (string) wp_parse_url( home_url( '/' ), PHP_URL_PATH );
+	$relative  = '/' . ltrim( substr( $path, strlen( rtrim( $home_path, '/' ) ) ), '/' );
+
+	if ( ! str_starts_with( $relative, '/experience/' ) ) {
+		return;
+	}
+
+	wp_safe_redirect( home_url( '/#experience' ), 301 );
+	exit;
 }
