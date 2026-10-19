@@ -44,7 +44,7 @@ Custom Post Type / ACF / REST API / nonce / sanitization・escaping
 | `pacchi-dev/portfolio` | **Next.js 版**（移植元）。ブランチ `nextjs-version`、タグ `v1.0-nextjs` に完成状態を保存済み |
 | このリポジトリ | WordPress 版 |
 
-移植元のローカルパス: `/Users/admin/prc-project/portfolio/portfolio-site`
+移植元のローカルパス: このリポジトリと同じ親ディレクトリにある `portfolio-site/`
 コンテンツは同リポジトリの `src/data/*.ts` にすべて入っている（シードデータの原本）。
 
 ## 設計ドキュメント

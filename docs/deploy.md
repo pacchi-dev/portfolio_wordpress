@@ -158,7 +158,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 ## 5. 書き出す（ローカルで実行）
 
 ```bash
-cd /Users/admin/prc-project/portfolio/portfolio_wordpress
+# リポジトリのルートで実行する
 ./bin/export.sh https://pacchi.net
 ```
 
@@ -290,7 +290,7 @@ DB 情報はルート側の `public_html/wp-config.php` からコピーすれば
 2. ローカルで書き出す
 
 ```bash
-cd /Users/admin/prc-project/portfolio/koumuten-wp
+# koumuten-wp のリポジトリのルートで実行する
 ./bin/export.sh https://pacchi.net/koumuten km_
 ```
 
